@@ -4,6 +4,7 @@ interface WP_JSON_ResponseInterface extends JsonSerializable {
 	/**
 	 * Get headers associated with the response
 	 *
+	 * @since 1.0.0
 	 * @return array Map of header name to header value
 	 */
 	public function get_headers();
@@ -11,6 +12,7 @@ interface WP_JSON_ResponseInterface extends JsonSerializable {
 	/**
 	 * Get the HTTP return code for the response
 	 *
+	 * @since 1.0.0
 	 * @return integer 3-digit HTTP status code
 	 */
 	public function get_status();
@@ -18,6 +20,7 @@ interface WP_JSON_ResponseInterface extends JsonSerializable {
 	/**
 	 * Get the response data
 	 *
+	 * @since 1.0.0
 	 * @return mixed
 	 */
 	public function get_data();
@@ -29,6 +32,7 @@ interface WP_JSON_ResponseInterface extends JsonSerializable {
 	 * {@see get_data()}, however this may be different if you want to do custom
 	 * JSON data handling.
 	 *
+	 * @since 1.0.0
 	 * @return mixed Any JSON-serializable value
 	 */
 	// public function jsonSerialize();

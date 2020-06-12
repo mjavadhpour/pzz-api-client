@@ -171,6 +171,7 @@ class WP_JSON_Posts_Controller {
 	/**
 	 * Retrieve a post.
 	 *
+	 * @since 1.0.0
 	 * @uses get_post()
 	 * @param int|WP_REST_Request $id Post ID or WP_REST_Request object.
 	 * @param string $context The context; 'view' (default) or 'edit'.
@@ -229,6 +230,7 @@ class WP_JSON_Posts_Controller {
 	/**
 	 * Retrieve the post comments.
 	 *
+	 * @since 1.0.0
 	 * @uses get_post_comments()
 	 * @param int|WP_REST_Request $id Post ID or WP_REST_Request object.
 	 * @return array Comment entity
@@ -237,6 +239,9 @@ class WP_JSON_Posts_Controller {
 		return apply_filters( 'json_prepare_post_comments', $idOrRequest );
 	}
 
+	/**
+	 * @since 1.0.0
+	 */
 	public function get_taxonomies( $request ) {
 		return apply_filters( 'json_get_taxonomies', $request );
 	}
@@ -245,6 +250,7 @@ class WP_JSON_Posts_Controller {
 	 * Add target="_blank" to html links
 	 * 
      * @since 1.1.0
+	 * @param string $text
      */
 	public function add_target_blank_to_links( $text ) {
 
@@ -263,8 +269,8 @@ class WP_JSON_Posts_Controller {
 	/**
 	 * Prepares post data for return in an XML-RPC object.
 	 *
-	 * @access protected
-	 *
+	 * @since 1.0.0
+	 * @access private
 	 * @param array $post The unprepared post data
 	 * @param string $context The context for the prepared post. (view|view-revision|edit|embed|single-parent)
 	 * @return array The prepared post data
@@ -437,6 +443,7 @@ class WP_JSON_Posts_Controller {
 	/**
 	 * Retrieve the post excerpt.
 	 *
+	 * @since 1.0.0
 	 * @return string
 	 */
 	private function prepare_excerpt( $excerpt ) {
@@ -455,6 +462,8 @@ class WP_JSON_Posts_Controller {
 
 	/**
 	 * Retrive the post content if available
+	 * 
+	 * @since 1.0.0
 	 */
 	private function prepare_content( $content) {
 		if ( post_password_required() ) {
@@ -467,6 +476,7 @@ class WP_JSON_Posts_Controller {
 	/**
 	 * Retrieve all meta for a post.
 	 *
+	 * @since 1.0.0
 	 * @param int $post_id Post ID
 	 * @return (array[]|WP_Error) List of meta object data on success, WP_Error otherwise
 	 */

@@ -11,6 +11,7 @@ class WP_JSON_DateTime extends DateTime {
 	 *
 	 * @link http://stackoverflow.com/a/17084893/717643
 	 *
+	 * @since 1.0.0
 	 * @param  string       $format   The format that the passed in string should be in.
 	 * @param  string       $string   String representing the time.
 	 * @param  DateTimeZone $timezone A DateTimeZone object representing the desired time zone.

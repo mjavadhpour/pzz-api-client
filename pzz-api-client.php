@@ -34,12 +34,16 @@ if ( ! defined( 'WPINC' ) ) {
  * Currently plugin version.
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
+ * 
+ * @since 1.0.0
  */
 define( 'PZZ_API_CLIENT_VERSION', '1.1.0' );
 
 /**
  * The code that runs during plugin activation.
  * This action is documented in includes/class-pzz-api-client-activator.php
+ * 
+ * @since 1.0.0
  */
 function activate_pzz_api_client() {
 	require_once plugin_dir_path( __FILE__ ) . 'includes/class-pzz-api-client-activator.php';
@@ -49,6 +53,8 @@ function activate_pzz_api_client() {
 /**
  * The code that runs during plugin deactivation.
  * This action is documented in includes/class-pzz-api-client-deactivator.php
+ * 
+ * @since 1.0.0
  */
 function deactivate_pzz_api_client() {
 	require_once plugin_dir_path( __FILE__ ) . 'includes/class-pzz-api-client-deactivator.php';
@@ -61,12 +67,15 @@ register_deactivation_hook( __FILE__, 'deactivate_pzz_api_client' );
 /**
  * The core plugin class that is used to define internationalization,
  * admin-specific hooks, and public-facing site hooks.
+ * 
+ * @since 1.0.0
  */
 require plugin_dir_path( __FILE__ ) . 'includes/class-pzz-api-client.php';
 
 /**
  * Check if we have permission to interact with the post object.
  *
+ * @since 1.0.0
  * @param WP_Post $post Post object.
  * @param string $capability Permission to check.
  * @return boolean Can we interact with it?
@@ -133,7 +142,8 @@ function json_check_post_permission( $post, $capability = 'read' ) {
  *
  * {@see get_avatar()} doesn't return just the URL, so we have to
  * extract it here.
- *
+ * 
+ * @since 1.0.0
  * @param string $email Email address.
  * @return string URL for the user's avatar, empty string otherwise.
 */
@@ -153,6 +163,7 @@ function json_get_avatar_url( $email ) {
 /**
  * Get the timezone object for the site.
  *
+ * @since 1.0.0
  * @return DateTimeZone DateTimeZone instance.
  */
 function json_get_timezone() {
@@ -186,8 +197,8 @@ function json_get_timezone() {
  * Explicitly strips timezones, as datetimes are not saved with any timezone
  * information. Including any information on the offset could be misleading.
  *
+ * @since 1.0.0
  * @param string $date_string
- *
  * @return mixed
  */
 function json_mysql_to_rfc3339( $date_string ) {
@@ -200,6 +211,7 @@ function json_mysql_to_rfc3339( $date_string ) {
 /**
  * Get URL to a JSON endpoint.
  *
+ * @since 1.0.0
  * @param string $path   Optional. JSON route. Default empty.
  * @param string $scheme Optional. Sanitization scheme. Default 'json'.
  * @return string Full URL to the endpoint.
@@ -211,8 +223,8 @@ function json_url( $path = '', $scheme = 'json' ) {
 /**
  * Get URL to a JSON endpoint on a site.
  *
+ * @since 1.0.0
  * @todo Check if this is even necessary
- *
  * @param int    $blog_id Blog ID.
  * @param string $path    Optional. JSON route. Default empty.
  * @param string $scheme  Optional. Sanitization scheme. Default 'json'.
@@ -239,8 +251,7 @@ function get_json_url( $blog_id = null, $path = '', $scheme = 'json' ) {
 	/**
 	 * Filter the JSON URL.
 	 *
-	 * @since 1.0
-	 *
+	 * @since 1.0.0
 	 * @param string $url     JSON URL.
 	 * @param string $path    JSON route.
 	 * @param int    $blod_ig Blog ID.
@@ -252,14 +263,14 @@ function get_json_url( $blog_id = null, $path = '', $scheme = 'json' ) {
 /**
  * Get the URL prefix for any API resource.
  *
+ * @since 1.0.0
  * @return string Prefix.
  */
 function json_get_url_prefix() {
 	/**
 	 * Filter the JSON URL prefix.
 	 *
-	 * @since 1.0
-	 *
+	 * @since 1.0.0
 	 * @param string $prefix URL prefix. Default 'wp-json'.
 	 */
 	return apply_filters( 'json_url_prefix', 'wp-json' );

@@ -5,6 +5,7 @@ class WP_JSON_Users {
 	 *
 	 * Prepare a User entity from a WP_User instance.
 	 *
+	 * @since 1.0.0
 	 * @param WP_User $user
 	 * @param string $context One of 'view', 'edit', 'embed', 'simple
 	 * @return array
@@ -57,6 +58,7 @@ class WP_JSON_Users {
 	/**
 	 * Add author data to post data
 	 *
+	 * @since 1.0.0
 	 * @param array $data Post data
 	 * @param array $post Internal post data
 	 * @param string $context Post context
@@ -74,6 +76,8 @@ class WP_JSON_Users {
 
 	/**
 	 * Add author data to comment data
+	 * 
+	 * @since 1.0.0
 	 */
 	public function add_comment_author_data( $data, $comment, $context = 'simple' ) {
 		$author = get_userdata( $comment->user_id );
@@ -88,10 +92,9 @@ class WP_JSON_Users {
 	/**
 	 * Retrieves the avatar urls in various sizes based on a given email address.
 	 *
-	 * @since 4.7.0
-	 *
 	 * @see get_avatar_url()
 	 *
+	 * @since 1.0.0
 	 * @param string $email Email address.
 	 * @return array $urls Gravatar url for each size.
 	 */

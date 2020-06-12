@@ -1,9 +1,10 @@
 <?php
 
 class WP_JSON_Comments {
-  /**
+  	/**
 	 * Retrieve comments
 	 * 
+	 * @since 1.0.0
 	 * @return array List of Comment entities
 	 */
 	public function get_comments( $request ) {
@@ -44,6 +45,7 @@ class WP_JSON_Comments {
     /**
 	 * Prepares comment data for returning as a JSON response.
 	 *
+	 * @since 1.0.0
 	 * @param stdClass $comment Comment object
 	 * @param array $requested_fields Fields to retrieve from the comment
 	 * @param string $context Where is the comment being loaded?

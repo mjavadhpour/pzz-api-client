@@ -260,6 +260,8 @@ class Pzz_Api_Client
     /**
      * Register the default JSON API filters.
      *
+     * @since 1.0.0
+     * 
      * @internal This will live in default-filters.php
      *
      * @global WP_JSON_Pages      $wp_json_pages

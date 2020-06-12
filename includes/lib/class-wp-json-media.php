@@ -4,6 +4,7 @@ class WP_JSON_Media extends WP_JSON_Posts_Controller {
 	/**
 	 * Add the featured image data to the post data
 	 *
+	 * @since 1.0.0
 	 * @param array $data Post data
 	 * @param array $post Raw post data from the database
 	 * @param string $context Display context
@@ -31,6 +32,8 @@ class WP_JSON_Media extends WP_JSON_Posts_Controller {
 	 * Retrieve a attachment
 	 *
 	 * @see WP_JSON_Posts_Controller::get_post()
+	 * 
+	 * @since 1.0.0
 	 */
 	public function get_post( $id, $context = 'view' ) {
 		$id = (int) $id;
@@ -48,10 +51,10 @@ class WP_JSON_Media extends WP_JSON_Posts_Controller {
 		return parent::get_post( $id, $context );
 	}
 
-		/**
+	/**
 	 * Prepares a single attachment output for response.
 	 *
-	 * @since 4.7.0
+	 * @since 1.0.0
 	 *
 	 * @param WP_JSON_Response  $post    Attachment object.
 	 * @return WP_REST_Response Response object.

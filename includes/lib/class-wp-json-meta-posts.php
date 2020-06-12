@@ -4,6 +4,7 @@ class WP_JSON_Meta_Posts extends WP_JSON_Meta {
 	/**
 	 * Check that the object can be accessed.
 	 *
+	 * @since 1.0.0
 	 * @param mixed $id Object ID
 	 * @return boolean|WP_Error
 	 */
@@ -28,6 +29,7 @@ class WP_JSON_Meta_Posts extends WP_JSON_Meta {
 	 *
 	 * Adds meta to post responses for the 'edit' context.
 	 *
+	 * @since 1.0.0
 	 * @param WP_Error|array $data Post response data (or error)
 	 * @param array $post Post data
 	 * @param string $context Context for the prepared post.
