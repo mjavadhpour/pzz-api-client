@@ -13,14 +13,14 @@
 /**
  * The core functionality of the plugin.
  *
- * @since      1.0.0
+ * @since      2.0.0
  * @package    Pzz_Api_Client
  * @subpackage Pzz_Api_Client/includes
  * @author     MJHP <mjavadhpour@gmail.com>
  * 
  * TODO: Check for refactor with this link: <a>https://upnrunn.com/blog/2018/04/how-to-extend-wp-rest-api-from-your-custom-plugin-part-3/</a>
  */
-class WP_JSON_Posts_Controller {
+class PZZ_JSON_Posts_Controller {
 
 	/**
 	 * The namespace of APIs.
@@ -142,7 +142,7 @@ class WP_JSON_Posts_Controller {
 		$query['paged'] = absint( $page );
 		$post_query = new WP_Query();
 		$posts_list = $post_query->query( $query );
-		$response   = new WP_JSON_Response();
+		$response   = new PZZ_JSON_Response();
 		$response->query_navigation_headers( $post_query );
 		if ( ! $posts_list ) {
 			$response->set_data( array() );
@@ -157,7 +157,7 @@ class WP_JSON_Posts_Controller {
 			if ( ! json_check_post_permission( $post, 'read' ) ) {
 				continue;
 			}
-			$response->link_header( 'item', json_url( '/posts/' . $post['ID'] ), array( 'title' => $post['post_title'] ) );
+			$response->link_header( 'item', PZZ_URL_Helper::convert_url_to_json_endpoint( '/posts/' . $post['ID'] ), array( 'title' => $post['post_title'] ) );
 			$post_data = $this->prepare_post( $post, $context );
 			if ( is_wp_error( $post_data ) ) {
 				continue;
@@ -206,7 +206,7 @@ class WP_JSON_Posts_Controller {
 
 		// Link headers (see RFC 5988)
 
-		$response = new WP_JSON_Response();
+		$response = new PZZ_JSON_Response();
 		$response->header( 'Last-Modified', mysql2date( 'D, d M Y H:i:s', $post['post_modified_gmt'] ) . 'GMT' );
 
 		$post = $this->prepare_post( $post, $context );
@@ -236,14 +236,14 @@ class WP_JSON_Posts_Controller {
 	 * @return array Comment entity
 	 */
 	public function get_post_comments( $idOrRequest ) {
-		return apply_filters( 'json_prepare_post_comments', $idOrRequest );
+		return apply_filters( 'pzz_prepare_post_comments', $idOrRequest );
 	}
 
 	/**
 	 * @since 1.0.0
 	 */
 	public function get_taxonomies( $request ) {
-		return apply_filters( 'json_get_taxonomies', $request );
+		return apply_filters( 'pzz_get_taxonomies', $request );
 	}
 
 	/**
@@ -361,7 +361,7 @@ class WP_JSON_Posts_Controller {
 		);
 
 		// Dates
-		$timezone = json_get_timezone();
+		$timezone = PZZ_DateTime_Helper::get_timezone();
 
 		if ( $post['post_date_gmt'] === '0000-00-00 00:00:00' ) {
 			$post_fields['date']              = null;
@@ -369,10 +369,10 @@ class WP_JSON_Posts_Controller {
 			$post_fields_extended['date_gmt'] = null;
 		}
 		else {
-			$post_date                        = WP_JSON_DateTime::createFromFormat( 'Y-m-d H:i:s', $post['post_date'], $timezone );
-			$post_fields['date']              = json_mysql_to_rfc3339( $post['post_date'] );
+			$post_date                        = PZZ_DateTime_Helper::createFromFormat( 'Y-m-d H:i:s', $post['post_date'], $timezone );
+			$post_fields['date']              = PZZ_MySql_Helper::mysql_to_rfc3339( $post['post_date'] );
 			$post_fields_extended['date_tz']  = $post_date->format( 'e' );
-			$post_fields_extended['date_gmt'] = json_mysql_to_rfc3339( $post['post_date_gmt'] );
+			$post_fields_extended['date_gmt'] = PZZ_MySql_Helper::mysql_to_rfc3339( $post['post_date_gmt'] );
 		}
 
 		if ( $post['post_modified_gmt'] === '0000-00-00 00:00:00' ) {
@@ -381,10 +381,10 @@ class WP_JSON_Posts_Controller {
 			$post_fields_extended['modified_gmt'] = null;
 		}
 		else {
-			$modified_date                        = WP_JSON_DateTime::createFromFormat( 'Y-m-d H:i:s', $post['post_modified'], $timezone );
-			$post_fields['modified']              = json_mysql_to_rfc3339( $post['post_modified'] );
+			$modified_date                        = PZZ_DateTime_Helper::createFromFormat( 'Y-m-d H:i:s', $post['post_modified'], $timezone );
+			$post_fields['modified']              = PZZ_MySql_Helper::mysql_to_rfc3339( $post['post_modified'] );
 			$post_fields_extended['modified_tz']  = $modified_date->format( 'e' );
-			$post_fields_extended['modified_gmt'] = json_mysql_to_rfc3339( $post['post_modified_gmt'] );
+			$post_fields_extended['modified_gmt'] = PZZ_MySql_Helper::mysql_to_rfc3339( $post['post_modified_gmt'] );
 		}
 
 		// Consider future posts as published
@@ -419,17 +419,17 @@ class WP_JSON_Posts_Controller {
 
 		// Entity meta
 		$links = array(
-			'self'       => json_url( '/posts/' . $post['ID'] ),
+			'self'       => PZZ_URL_Helper::convert_url_to_json_endpoint( '/posts/' . $post['ID'] ),
 		);
 
 		if ( 'view-revision' != $context ) {
-			$links['replies'] = json_url( '/posts/' . $post['ID'] . '/comments' );
+			$links['replies'] = PZZ_URL_Helper::convert_url_to_json_endpoint( '/posts/' . $post['ID'] . '/comments' );
 		}
 
 		$_post['meta'] = array( 'links' => $links );
 
 		if ( ! empty( $post['post_parent'] ) ) {
-			$_post['meta']['links']['up'] = json_url( '/posts/' . (int) $post['post_parent'] );
+			$_post['meta']['links']['up'] = PZZ_URL_Helper::convert_url_to_json_endpoint( '/posts/' . (int) $post['post_parent'] );
 		}
 
 		$GLOBALS['post'] = $previous_post;
@@ -437,7 +437,7 @@ class WP_JSON_Posts_Controller {
 			setup_postdata( $previous_post );
 		}
 
-		return apply_filters( 'json_prepare_post', $_post, $post, $context );
+		return apply_filters( 'pzz_prepare_post', $_post, $post, $context );
 	}
 
 	/**
@@ -481,7 +481,7 @@ class WP_JSON_Posts_Controller {
 	 * @return (array[]|WP_Error) List of meta object data on success, WP_Error otherwise
 	 */
 	private function handle_get_post_meta( $post_id ) {
-		$handler = new WP_JSON_Meta_Posts( $this->server );
+		$handler = new PZZ_JSON_Meta_Posts( $this->server );
 
 		return $handler->get_all_meta( $post_id );
 	}

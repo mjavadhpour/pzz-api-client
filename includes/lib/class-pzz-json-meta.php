@@ -1,12 +1,11 @@
 <?php
-/**
- * Metadata base class.
- */
 
 /**
  * Metadata base class.
+ * 
+ * @since 2.0.0
  */
-abstract class WP_JSON_Meta {
+abstract class PZZ_JSON_Meta {
 	/**
 	 * Check that the object is valid and can be accessed.
 	 *

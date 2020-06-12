@@ -1,6 +1,12 @@
 <?php
 
-class WP_JSON_Users {
+/**
+ *
+ * User json helper and modifier.
+ *
+ * @since 2.0.0
+ */
+class PZZ_JSON_Users {
 	/**
 	 *
 	 * Prepare a User entity from a WP_User instance.
@@ -15,7 +21,7 @@ class WP_JSON_Users {
 			'username'    => $user->user_login,
 			'first_name'  => $user->first_name,
 			'last_name'   => $user->last_name,
-			'avatar'      => json_get_avatar_url( $user->user_email ),
+			'avatar'      => PZZ_URL_Helper::get_avatar_url( $user->user_email ),
 		);
 
 		if ( $context === 'view' || $context === 'edit' ) {
@@ -47,8 +53,8 @@ class WP_JSON_Users {
 
 		$user_fields['meta'] = array(
 			'links' => array(
-				'self' => json_url( '/users/' . $user->ID ),
-				'archives' => json_url( '/users/' . $user->ID . '/posts' ),
+				'self' => PZZ_URL_Helper::convert_url_to_json_endpoint( '/users/' . $user->ID ),
+				'archives' => PZZ_URL_Helper::convert_url_to_json_endpoint( '/users/' . $user->ID . '/posts' ),
 			),
 		);
 

@@ -1,6 +1,9 @@
 <?php
 
-class WP_JSON_Media extends WP_JSON_Posts_Controller {
+/**
+ * @since 2.0.0
+ */
+class PZZ_JSON_Media extends PZZ_JSON_Posts_Controller {
 	/**
 	 * Add the featured image data to the post data
 	 *
@@ -31,7 +34,7 @@ class WP_JSON_Media extends WP_JSON_Posts_Controller {
 	/**
 	 * Retrieve a attachment
 	 *
-	 * @see WP_JSON_Posts_Controller::get_post()
+	 * @see PZZ_JSON_Posts_Controller::get_post()
 	 * 
 	 * @since 1.0.0
 	 */
@@ -56,7 +59,7 @@ class WP_JSON_Media extends WP_JSON_Posts_Controller {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param WP_JSON_Response  $post    Attachment object.
+	 * @param PZZ_JSON_Response $post    Attachment object.
 	 * @return WP_REST_Response Response object.
 	 */
 	public function prepare_item_for_response( $post ) {

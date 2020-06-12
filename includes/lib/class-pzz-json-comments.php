@@ -1,6 +1,9 @@
 <?php
 
-class WP_JSON_Comments {
+/**
+ * @since 2.0.0
+ */
+class PZZ_JSON_Comments {
   	/**
 	 * Retrieve comments
 	 * 
@@ -112,31 +115,31 @@ class WP_JSON_Comments {
 				'ID'     => 0,
 				'name'   => $comment->comment_author,
 				'URL'    => $comment->comment_author_url,
-				'avatar' => json_get_avatar_url( $comment->comment_author_email ),
+				'avatar' => PZZ_URL_Helper::get_avatar_url( $comment->comment_author_email ),
 			);
 		}
 
 		// Date
-		$timezone     = json_get_timezone();
-		$comment_date = WP_JSON_DateTime::createFromFormat( 'Y-m-d H:i:s', $comment->comment_date, $timezone );
+		$timezone     = PZZ_DateTime_Helper::get_timezone();
+		$comment_date = PZZ_DateTime_Helper::createFromFormat( 'Y-m-d H:i:s', $comment->comment_date, $timezone );
 
-		$fields['date']     = json_mysql_to_rfc3339( $comment->comment_date );
+		$fields['date']     = PZZ_MySql_Helper::mysql_to_rfc3339( $comment->comment_date );
 		$fields['date_tz']  = $comment_date->format( 'e' );
-		$fields['date_gmt'] = json_mysql_to_rfc3339( $comment->comment_date_gmt );
+		$fields['date_gmt'] = PZZ_MySql_Helper::mysql_to_rfc3339( $comment->comment_date_gmt );
 
 		// Meta
 		$meta = array(
 			'links' => array(
-				'up' => json_url( sprintf( '/posts/%d', (int) $comment->comment_post_ID ) )
+				'up' => PZZ_URL_Helper::convert_url_to_json_endpoint( sprintf( '/posts/%d', (int) $comment->comment_post_ID ) )
 			),
 		);
 
 		if ( 0 !== (int) $comment->comment_parent ) {
-			$meta['links']['in-reply-to'] = json_url( sprintf( '/posts/%d/comments/%d', (int) $comment->comment_post_ID, (int) $comment->comment_parent ) );
+			$meta['links']['in-reply-to'] = PZZ_URL_Helper::convert_url_to_json_endpoint( sprintf( '/posts/%d/comments/%d', (int) $comment->comment_post_ID, (int) $comment->comment_parent ) );
 		}
 
 		if ( 'single' !== $context ) {
-			$meta['links']['self'] = json_url( sprintf( '/posts/%d/comments/%d', (int) $comment->comment_post_ID, (int) $comment->comment_ID ) );
+			$meta['links']['self'] = PZZ_URL_Helper::convert_url_to_json_endpoint( sprintf( '/posts/%d/comments/%d', (int) $comment->comment_post_ID, (int) $comment->comment_ID ) );
 		}
 
 		// Remove unneeded fields
@@ -150,6 +153,6 @@ class WP_JSON_Comments {
 			$data['meta'] = $meta;
 		}
 
-		return apply_filters( 'json_prepare_comment', $data, $comment, $context );
+		return apply_filters( 'pzz_prepare_comment', $data, $comment, $context );
 	}
 }

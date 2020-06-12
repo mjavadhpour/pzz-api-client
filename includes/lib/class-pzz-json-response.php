@@ -1,6 +1,9 @@
 <?php
 
-class WP_JSON_Response implements WP_JSON_ResponseInterface {
+/**
+ * @since 2.0.0
+ */
+class PZZ_JSON_Response implements PZZ_JSON_ResponseInterface {
 	/**
 	 * Constructor
 	 *

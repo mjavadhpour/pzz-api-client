@@ -1,6 +1,9 @@
 <?php
 
-interface WP_JSON_ResponseInterface extends JsonSerializable {
+/**
+ * @since 2.0.0
+ */
+interface PZZ_JSON_ResponseInterface extends JsonSerializable {
 	/**
 	 * Get headers associated with the response
 	 *

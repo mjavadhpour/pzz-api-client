@@ -1,6 +1,6 @@
 <?php
 
-class WP_JSON_Meta_Posts extends WP_JSON_Meta {
+class PZZ_JSON_Meta_Posts extends PZZ_JSON_Meta {
 	/**
 	 * Check that the object can be accessed.
 	 *

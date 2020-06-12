@@ -1,6 +1,6 @@
 <?php
 
-class WP_JSON_Taxonomies {
+class PZZ_JSON_Taxonomies {
 	/**
 	 * Add term data to post data
 	 *
