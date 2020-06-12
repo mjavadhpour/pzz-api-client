@@ -185,10 +185,6 @@ class Pzz_Api_Client
     {
         $core = new PZZ_JSON_Posts_Controller('pzz', $this->get_api_version());
 
-        // TODO: I think that version SHOULD be separated from the plugin version
-        // because maybe we want to handle two version of APIs in our latest plugin
-        // version. The main idea is define the routes in the version key in the $routes
-        // array.
         $routes[] = [
             'method' => 'GET',
             'path' => 'posts',
@@ -308,9 +304,13 @@ class Pzz_Api_Client
      */
     private function get_api_version()
     {
-        $version_array = explode(".", $this->get_version());
-
-        return isset($version_array[0]) ? $version_array[0] : '1';
+        /**
+         * As we should handle API version separately from plugin version,
+         * then we should not depend on the plugin version, @since 2.0.0 we
+         * hard code the API version instead of resolving it from plugin
+         * version.
+         */
+        return '1';
     }
 
 }
