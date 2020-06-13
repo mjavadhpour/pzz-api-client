@@ -72,7 +72,10 @@ class PZZ_JSON_Posts_Controller {
 		register_rest_route( $this->namespace . '/' . $this->get_version(), $path, array(
 			'methods' => $method,
 			'callback' => $callback,
-			'args' => $args
+			'args' => $args,
+			'permission_callback' => function () {
+				return false;
+			}
 		));
 
 	}
@@ -154,7 +157,7 @@ class PZZ_JSON_Posts_Controller {
 		foreach ( $posts_list as $post ) {
 			$post = get_object_vars( $post );
 			// Do we have permission to read this post?
-			if ( ! json_check_post_permission( $post, 'read' ) ) {
+			if ( ! PZZ_Post_Helper::check_post_permission( $post, 'read' ) ) {
 				continue;
 			}
 			$response->link_header( 'item', PZZ_URL_Helper::convert_url_to_json_endpoint( '/posts/' . $post['ID'] ), array( 'title' => $post['post_title'] ) );
@@ -200,7 +203,7 @@ class PZZ_JSON_Posts_Controller {
 			$checked_post = $post;
 		}
 
-		if ( ! json_check_post_permission( $checked_post, $checked_permission ) ) {
+		if ( ! PZZ_Post_Helper::check_post_permission( $checked_post, $checked_permission ) ) {
 			return new WP_Error( 'json_user_cannot_read', __( 'Sorry, you cannot read this post.' ), array( 'status' => 401 ) );
 		}
 
@@ -281,7 +284,7 @@ class PZZ_JSON_Posts_Controller {
 
 		$post_type = get_post_type_object( $post['post_type'] );
 
-		if ( ! json_check_post_permission( $post, 'read' ) ) {
+		if ( ! PZZ_Post_Helper::check_post_permission( $post, 'read' ) ) {
 			return new WP_Error( 'json_user_cannot_read', __( 'Sorry, you cannot read this post.' ), array( 'status' => 401 ) );
 		}
 
@@ -293,7 +296,7 @@ class PZZ_JSON_Posts_Controller {
 
 		// Don't allow unauthenticated users to read password-protected posts
 		if ( ! empty( $post['post_password'] ) ) {
-			if ( ! json_check_post_permission( $post, 'edit' ) ) {
+			if ( ! PZZ_Post_Helper::check_post_permission( $post, 'edit' ) ) {
 				return new WP_Error( 'json_user_cannot_read', __( 'Sorry, you cannot read this post.' ), array( 'status' => 403 ) );
 			}
 
@@ -406,7 +409,7 @@ class PZZ_JSON_Posts_Controller {
 		$_post = array_merge( $_post, $post_fields_extended );
 
 		if ( 'view-revision' == $context ) {
-			if ( json_check_post_permission( $post, 'edit' ) ) {
+			if ( PZZ_Post_Helper::check_post_permission( $post, 'edit' ) ) {
 				$_post = array_merge( $_post, $post_fields_raw );
 			} else {
 				$GLOBALS['post'] = $previous_post;

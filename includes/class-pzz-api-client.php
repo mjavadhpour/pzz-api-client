@@ -162,6 +162,7 @@ class Pzz_Api_Client
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/utils/class-pzz-datetime.php';
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/utils/class-pzz-url.php';
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/utils/class-pzz-mysql.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/utils/class-pzz-post.php';
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/lib/class-pzz-json-comments.php';
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/lib/class-pzz-json-meta.php';
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/lib/class-pzz-json-meta-posts.php';
@@ -260,7 +261,6 @@ class Pzz_Api_Client
      * 
      * @internal This will live in default-filters.php
      *
-     * @global WP_JSON_Pages       $wp_json_pages
      * @global PZZ_JSON_Media      $pzz_json_media
      * @global PZZ_JSON_Taxonomies $pzz_json_taxonomies
      *
