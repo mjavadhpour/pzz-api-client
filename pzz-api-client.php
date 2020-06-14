@@ -16,7 +16,7 @@
  * Plugin Name:       WordPress Simple API
  * Plugin URI:        pzz-api-client
  * Description:       این افزونه ارائه دهنده HTTP API ساده شده برای لیست پست ها و کتگوری ها و تگ های وبسایت شماست.
- * Version:           1.1.0
+ * Version:           1.1.1
  * Author:            MJavad Hpour
  * Author URI:        https://www.linkedin.com/in/mjavadhpour/
  * License:           GPL-2.0+
@@ -35,7 +35,7 @@ if ( ! defined( 'WPINC' ) ) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'PZZ_API_CLIENT_VERSION', '1.1.0' );
+define( 'PZZ_API_CLIENT_VERSION', '1.1.1' );
 
 /**
  * The code that runs during plugin activation.
