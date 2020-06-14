@@ -84,14 +84,14 @@ class PZZ_Post_Helper extends DateTime {
             return $data;
         }
 
-        if( preg_match('/&lt;a.*?target=[^>]*?>/', $data) ) {
-            $data = str_replace('target=&#8221;_blank&#8221;', '', $data);
-            $data = str_replace('target=&#8221;_top&#8221;', '', $data);
-            $data = str_replace('target=&#8221;_self&#8221;', '', $data);
-            $data = str_replace('target=&#8221;_parent&#8221;', '', $data);
+        if( preg_match('/<a.*?target=[^>]*?>/', $data) ) {
+            $data = str_replace('target="_blank"', '', $data);
+            $data = str_replace('target="_top"', '', $data);
+            $data = str_replace('target="_self"', '', $data);
+            $data = str_replace('target="_parent"', '', $data);
         }
 
-        $data = str_replace('&lt;a', '&lt;a target=&#8221;_blank&#8221;', $data);
+        $data = str_replace('<a', '<a target="_blank"', $data);
 
 		return $data;
 	}
