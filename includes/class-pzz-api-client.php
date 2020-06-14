@@ -293,9 +293,9 @@ class Pzz_Api_Client
         $wp_json_comments = new WP_JSON_Comments();
         $this->loader->add_filter('json_prepare_post_comments', $wp_json_comments, 'get_comments', 10, 1);
 
-        // Post
+        // Post links.
         $wp_json_post = new WP_JSON_Posts_Controller();
-        $this->loader->add_filter('json_prepare_post', $wp_json_post, 'add_target_blank_to_links', 10, 1);
+        $this->loader->add_filter('json_prepare_post', $wp_json_post, 'add_target_blank_to_links', 10, 3);
     }
 
     /**

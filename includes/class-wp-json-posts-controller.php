@@ -243,21 +243,28 @@ class WP_JSON_Posts_Controller {
 
 	/**
 	 * Add target="_blank" to html links
-	 * 
-     * @since 1.1.0
+	 *
+	 * @since 1.1.0
+	 * @param WP_Error|array $data Post response data (or error)
+	 * @param array $post Post data
+	 * @param string $context Context for the prepared post.
+	 * @return WP_Error|array Filtered data
      */
-	public function add_target_blank_to_links( $text ) {
-
-		if( preg_match('/<a.*?target=[^>]*?>/', $text) ) {
-			$text = str_replace('target="_blank"', '', $text);
-			$text = str_replace('target="_top"', '', $text);
-			$text = str_replace('target="_self"', '', $text);
-			$text = str_replace('target="_parent"', '', $text);
+	public function add_target_blank_to_links( $data, $post, $context ) {
+		foreach (['excerpt'] as $value) {
+			if ( isset($data[$value]) && !empty($data[$value]) ) {
+				if( preg_match('/<a.*?target=[^>]*?>/', $data[$value]) ) {
+					$data[$value] = str_replace('target="_blank"', '', $data[$value]);
+					$data[$value] = str_replace('target="_top"', '', $data[$value]);
+					$data[$value] = str_replace('target="_self"', '', $data[$value]);
+					$data[$value] = str_replace('target="_parent"', '', $data[$value]);
+				}
+		
+				$data[$value] = str_replace('<a', '<a target="_blank"', $data[$value]);
+			}
 		}
 
-		$return = str_replace('<a', '<a target="_blank"', $text);
-
-		return $return;
+		return $data;
 	}
 
 	/**
