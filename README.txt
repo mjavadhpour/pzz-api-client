@@ -7,7 +7,7 @@ Stable tag: 4.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-این افزونه ارائه دهنده HTTP API ساده شده برای لیست پست ها و کتگوری ها و تگ های وبسایت شماست.
+این افزونه ارائه دهنده رابط برنامه‌نویسی وب به صورت ساده شده برای استفاده در اپلیکیشن‌ساز آنلاین پازلی است
 
 == Description ==
 
