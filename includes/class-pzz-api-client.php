@@ -293,7 +293,7 @@ class Pzz_Api_Client
 
         // Post links.
         $wp_json_post = new PZZ_Post_Helper();
-        $this->loader->add_filter('get_the_excerpt', $wp_json_post, 'add_target_blank_to_links', 10, 1);
+        $this->loader->add_filter('the_content', $wp_json_post, 'add_target_blank_to_links', 10, 1);
     }
 
     /**
