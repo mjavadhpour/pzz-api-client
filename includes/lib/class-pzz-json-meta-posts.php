@@ -1,9 +1,13 @@
 <?php
 
-class WP_JSON_Meta_Posts extends WP_JSON_Meta {
+/**
+ * @since 1.1.1
+ */
+class PZZ_JSON_Meta_Posts extends PZZ_JSON_Meta {
 	/**
 	 * Check that the object can be accessed.
 	 *
+	 * @since 1.1.1
 	 * @param mixed $id Object ID
 	 * @return boolean|WP_Error
 	 */
@@ -16,7 +20,7 @@ class WP_JSON_Meta_Posts extends WP_JSON_Meta {
 			return new WP_Error( 'json_post_invalid_id', __( 'Invalid post ID.' ), array( 'status' => 404 ) );
 		}
 
-		if ( ! json_check_post_permission( $post, 'edit' ) ) {
+		if ( ! PZZ_Post_Helper::check_post_permission( $post, 'edit' ) ) {
 			return new WP_Error( 'json_cannot_edit', __( 'Sorry, you cannot edit this post' ), array( 'status' => 403 ) );
 		}
 
@@ -28,6 +32,7 @@ class WP_JSON_Meta_Posts extends WP_JSON_Meta {
 	 *
 	 * Adds meta to post responses for the 'edit' context.
 	 *
+	 * @since 1.1.1
 	 * @param WP_Error|array $data Post response data (or error)
 	 * @param array $post Post data
 	 * @param string $context Context for the prepared post.

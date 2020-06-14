@@ -1,9 +1,13 @@
 <?php
 
-class WP_JSON_Response implements WP_JSON_ResponseInterface {
+/**
+ * @since 1.1.1
+ */
+class PZZ_JSON_Response implements PZZ_JSON_ResponseInterface {
 	/**
 	 * Constructor
 	 *
+	 * @since 1.1.1
 	 * @param mixed $data Response data
 	 * @param integer $status HTTP status code
 	 * @param array $headers HTTP header map
@@ -17,6 +21,7 @@ class WP_JSON_Response implements WP_JSON_ResponseInterface {
 	/**
 	 * Get headers associated with the response
 	 *
+	 * @since 1.1.1
 	 * @return array Map of header name to header value
 	 */
 	public function get_headers() {
@@ -26,6 +31,7 @@ class WP_JSON_Response implements WP_JSON_ResponseInterface {
 	/**
 	 * Set all header values
 	 *
+	 * @since 1.1.1
 	 * @param array $headers Map of header name to header value
 	 */
 	public function set_headers( $headers ) {
@@ -35,6 +41,7 @@ class WP_JSON_Response implements WP_JSON_ResponseInterface {
 	/**
 	 * Set a single HTTP header
 	 *
+	 * @since 1.1.1
 	 * @param string $key Header name
 	 * @param string $value Header value
 	 * @param boolean $replace Replace an existing header of the same name?
@@ -55,6 +62,7 @@ class WP_JSON_Response implements WP_JSON_ResponseInterface {
 	 * @link http://tools.ietf.org/html/rfc5988
 	 * @link http://www.iana.org/assignments/link-relations/link-relations.xml
 	 *
+	 * @since 1.1.1
 	 * @param string $rel Link relation. Either an IANA registered type, or an absolute URL
 	 * @param string $link Target IRI for the link
 	 * @param array $other Other parameters to send, as an assocative array
@@ -74,6 +82,7 @@ class WP_JSON_Response implements WP_JSON_ResponseInterface {
 	/**
 	 * Send navigation-related headers for post collections
 	 *
+	 * @since 1.1.1
 	 * @param WP_Query $query
 	 */
 	public function query_navigation_headers( $query ) {
@@ -109,6 +118,7 @@ class WP_JSON_Response implements WP_JSON_ResponseInterface {
 	/**
 	 * Get the HTTP return code for the response
 	 *
+	 * @since 1.1.1
 	 * @return integer 3-digit HTTP status code
 	 */
 	public function get_status() {
@@ -118,6 +128,7 @@ class WP_JSON_Response implements WP_JSON_ResponseInterface {
 	/**
 	 * Set the HTTP status code
 	 *
+	 * @since 1.1.1
 	 * @param int $code HTTP status
 	 */
 	public function set_status( $code ) {
@@ -127,6 +138,7 @@ class WP_JSON_Response implements WP_JSON_ResponseInterface {
 	/**
 	 * Get the response data
 	 *
+	 * @since 1.1.1
 	 * @return mixed
 	 */
 	public function get_data() {
@@ -136,6 +148,7 @@ class WP_JSON_Response implements WP_JSON_ResponseInterface {
 	/**
 	 * Set the response data
 	 *
+	 * @since 1.1.1
 	 * @param mixed $data
 	 */
 	public function set_data( $data ) {
@@ -149,6 +162,7 @@ class WP_JSON_Response implements WP_JSON_ResponseInterface {
 	 * {@see get_data()}, however this may be different if you want to do custom
 	 * JSON data handling.
 	 *
+	 * @since 1.1.1
 	 * @return mixed Any JSON-serializable value
 	 */
 	public function jsonSerialize() {

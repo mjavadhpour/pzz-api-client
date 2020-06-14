@@ -1,15 +1,15 @@
 <?php
-/**
- * Metadata base class.
- */
 
 /**
  * Metadata base class.
+ * 
+ * @since 1.1.1
  */
-abstract class WP_JSON_Meta {
+abstract class PZZ_JSON_Meta {
 	/**
 	 * Check that the object is valid and can be accessed.
 	 *
+	 * @since 1.1.1
 	 * @param mixed $id Object ID (can be any data from the API, will be validated)
 	 * @return boolean|WP_Error True if valid and accessible, error otherwise.
 	 */
@@ -18,6 +18,7 @@ abstract class WP_JSON_Meta {
 	/**
 	 * Retrieve custom fields for object.
 	 *
+	 * @since 1.1.1
 	 * @param int $id Object ID
 	 * @return (array[]|WP_Error) List of meta object data on success, WP_Error otherwise
 	 */
