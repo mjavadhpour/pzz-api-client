@@ -8,14 +8,14 @@
  * registers the activation and deactivation functions, and defines a function
  * that starts the plugin.
  *
- * @link              https://github.com/mjhpour
+ * @link              https://github.com/mjavadhpour/pzz-api-client
  * @since             1.0.0
  * @package           Pzz_Api_Client
  *
  * @wordpress-plugin
- * Plugin Name:       WordPress Simple API
- * Plugin URI:        https://puzzley.ir/1398/01/27/%D8%A7%D9%81%D8%B2%D9%88%D9%86%D9%87-%D9%88%D8%B1%D8%AF%D9%BE%D8%B1%D8%B3/
- * Description:       این افزونه ارائه دهنده <strong>رابط برنامه‌نویسی وب</strong> به صورت ساده شده برای استفاده در <a href="https://puzzley.ir" target="_blank">اپلیکیشن‌ساز آنلاین پازلی</a> است
+ * Plugin Name:       PZZ WordPress Simple API
+ * Plugin URI:        https://github.com/mjavadhpour/pzz-api-client
+ * Description:       این افزونه ارائه دهنده <strong>رابط برنامه‌نویسی وب</strong> به صورت ساده شده برای استفاده در اپلیکیشن‌سازهای آنلاین است
  * Version:           1.1.1
  * Author:            MJavad Hpour
  * Author URI:        https://www.linkedin.com/in/mjavadhpour/
