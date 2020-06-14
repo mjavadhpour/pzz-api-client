@@ -3,29 +3,19 @@
 /**
  * The core functionality of the plugin.
  *
- * @link       https://www.linkedin.com/in/mjavadhpour/
- * @since      1.0.0
- *
- * @package    Pzz_Api_Client
- * @subpackage Pzz_Api_Client/includes
- */
-
-/**
- * The core functionality of the plugin.
- *
- * @since      1.0.0
+ * @since      1.1.1
  * @package    Pzz_Api_Client
  * @subpackage Pzz_Api_Client/includes
  * @author     MJHP <mjavadhpour@gmail.com>
  * 
  * TODO: Check for refactor with this link: <a>https://upnrunn.com/blog/2018/04/how-to-extend-wp-rest-api-from-your-custom-plugin-part-3/</a>
  */
-class WP_JSON_Posts_Controller {
+class PZZ_JSON_Posts_Controller {
 
 	/**
 	 * The namespace of APIs.
 	 *
-	 * @since    1.0.0
+	 * @since    1.1.1
 	 * @access   private
 	 * @var      string    $namespace    The namespace of APIs.
 	 */
@@ -34,7 +24,7 @@ class WP_JSON_Posts_Controller {
 	/**
 	 * The version of the APIs.
 	 *
-	 * @since    1.0.0
+	 * @since    1.1.1
 	 * @access   private
 	 * @var      string    $version    The version of the APIs.
 	 */
@@ -43,7 +33,7 @@ class WP_JSON_Posts_Controller {
 	/**
 	 * Initialize the class and set its properties.
 	 *
-	 * @since    1.0.0
+	 * @since      1.1.1
 	 * @param      string                   $plugin_name       The namespace of APIs.
 	 * @param      string                   $version           The version of the APIs.
 	 */
@@ -58,7 +48,7 @@ class WP_JSON_Posts_Controller {
 	 * Build API route with given arguments. the namespace and the version
 	 * come from the inner class properties.
 	 *
-	 * @since    1.0.0
+	 * @since    1.1.1
 	 * @param    function    $callback    The function that was executed when the endpoint was called.
 	 * @param    string      $path        The path of the API. You can start path with the "/" character or not; it was optional.
 	 * @param    string      $method      The API HTTP method.
@@ -88,7 +78,7 @@ class WP_JSON_Posts_Controller {
 	 *               tag
 	 *               tag_id
 	 * 
-	 * @since    1.0.0
+	 * @since    1.1.1
 	 * @param    WP_REST_Request   $request    Wordpress rest request object; passed by the WordPress.
 	 */
 	public function get_posts( $request ) {
@@ -142,7 +132,7 @@ class WP_JSON_Posts_Controller {
 		$query['paged'] = absint( $page );
 		$post_query = new WP_Query();
 		$posts_list = $post_query->query( $query );
-		$response   = new WP_JSON_Response();
+		$response   = new PZZ_JSON_Response();
 		$response->query_navigation_headers( $post_query );
 		if ( ! $posts_list ) {
 			$response->set_data( array() );
@@ -154,10 +144,10 @@ class WP_JSON_Posts_Controller {
 		foreach ( $posts_list as $post ) {
 			$post = get_object_vars( $post );
 			// Do we have permission to read this post?
-			if ( ! json_check_post_permission( $post, 'read' ) ) {
+			if ( ! PZZ_Post_Helper::check_post_permission( $post, 'read' ) ) {
 				continue;
 			}
-			$response->link_header( 'item', json_url( '/posts/' . $post['ID'] ), array( 'title' => $post['post_title'] ) );
+			$response->link_header( 'item', PZZ_URL_Helper::convert_url_to_json_endpoint( '/posts/' . $post['ID'] ), array( 'title' => $post['post_title'] ) );
 			$post_data = $this->prepare_post( $post, $context );
 			if ( is_wp_error( $post_data ) ) {
 				continue;
@@ -171,6 +161,7 @@ class WP_JSON_Posts_Controller {
 	/**
 	 * Retrieve a post.
 	 *
+	 * @since 1.1.1
 	 * @uses get_post()
 	 * @param int|WP_REST_Request $id Post ID or WP_REST_Request object.
 	 * @param string $context The context; 'view' (default) or 'edit'.
@@ -199,13 +190,13 @@ class WP_JSON_Posts_Controller {
 			$checked_post = $post;
 		}
 
-		if ( ! json_check_post_permission( $checked_post, $checked_permission ) ) {
+		if ( ! PZZ_Post_Helper::check_post_permission( $checked_post, $checked_permission ) ) {
 			return new WP_Error( 'json_user_cannot_read', __( 'Sorry, you cannot read this post.' ), array( 'status' => 401 ) );
 		}
 
 		// Link headers (see RFC 5988)
 
-		$response = new WP_JSON_Response();
+		$response = new PZZ_JSON_Response();
 		$response->header( 'Last-Modified', mysql2date( 'D, d M Y H:i:s', $post['post_modified_gmt'] ) . 'GMT' );
 
 		$post = $this->prepare_post( $post, $context );
@@ -229,42 +220,27 @@ class WP_JSON_Posts_Controller {
 	/**
 	 * Retrieve the post comments.
 	 *
+	 * @since 1.1.1
 	 * @uses get_post_comments()
 	 * @param int|WP_REST_Request $id Post ID or WP_REST_Request object.
 	 * @return array Comment entity
 	 */
 	public function get_post_comments( $idOrRequest ) {
-		return apply_filters( 'json_prepare_post_comments', $idOrRequest );
-	}
-
-	public function get_taxonomies( $request ) {
-		return apply_filters( 'json_get_taxonomies', $request );
+		return apply_filters( 'pzz_prepare_post_comments', $idOrRequest );
 	}
 
 	/**
-	 * Add target="_blank" to html links
-	 * 
-     * @since 1.1.0
-     */
-	public function add_target_blank_to_links( $text ) {
-
-		if( preg_match('/<a.*?target=[^>]*?>/', $text) ) {
-			$text = str_replace('target="_blank"', '', $text);
-			$text = str_replace('target="_top"', '', $text);
-			$text = str_replace('target="_self"', '', $text);
-			$text = str_replace('target="_parent"', '', $text);
-		}
-
-		$return = str_replace('<a', '<a target="_blank"', $text);
-
-		return $return;
+	 * @since 1.1.1
+	 */
+	public function get_taxonomies( $request ) {
+		return apply_filters( 'pzz_get_taxonomies', $request );
 	}
 
 	/**
 	 * Prepares post data for return in an XML-RPC object.
 	 *
-	 * @access protected
-	 *
+	 * @since 1.1.1
+	 * @access private
 	 * @param array $post The unprepared post data
 	 * @param string $context The context for the prepared post. (view|view-revision|edit|embed|single-parent)
 	 * @return array The prepared post data
@@ -275,7 +251,7 @@ class WP_JSON_Posts_Controller {
 
 		$post_type = get_post_type_object( $post['post_type'] );
 
-		if ( ! json_check_post_permission( $post, 'read' ) ) {
+		if ( ! PZZ_Post_Helper::check_post_permission( $post, 'read' ) ) {
 			return new WP_Error( 'json_user_cannot_read', __( 'Sorry, you cannot read this post.' ), array( 'status' => 401 ) );
 		}
 
@@ -287,7 +263,7 @@ class WP_JSON_Posts_Controller {
 
 		// Don't allow unauthenticated users to read password-protected posts
 		if ( ! empty( $post['post_password'] ) ) {
-			if ( ! json_check_post_permission( $post, 'edit' ) ) {
+			if ( ! PZZ_Post_Helper::check_post_permission( $post, 'edit' ) ) {
 				return new WP_Error( 'json_user_cannot_read', __( 'Sorry, you cannot read this post.' ), array( 'status' => 403 ) );
 			}
 
@@ -355,7 +331,7 @@ class WP_JSON_Posts_Controller {
 		);
 
 		// Dates
-		$timezone = json_get_timezone();
+		$timezone = PZZ_DateTime_Helper::get_timezone();
 
 		if ( $post['post_date_gmt'] === '0000-00-00 00:00:00' ) {
 			$post_fields['date']              = null;
@@ -363,10 +339,10 @@ class WP_JSON_Posts_Controller {
 			$post_fields_extended['date_gmt'] = null;
 		}
 		else {
-			$post_date                        = WP_JSON_DateTime::createFromFormat( 'Y-m-d H:i:s', $post['post_date'], $timezone );
-			$post_fields['date']              = json_mysql_to_rfc3339( $post['post_date'] );
+			$post_date                        = PZZ_DateTime_Helper::createFromFormat( 'Y-m-d H:i:s', $post['post_date'], $timezone );
+			$post_fields['date']              = PZZ_MySql_Helper::mysql_to_rfc3339( $post['post_date'] );
 			$post_fields_extended['date_tz']  = $post_date->format( 'e' );
-			$post_fields_extended['date_gmt'] = json_mysql_to_rfc3339( $post['post_date_gmt'] );
+			$post_fields_extended['date_gmt'] = PZZ_MySql_Helper::mysql_to_rfc3339( $post['post_date_gmt'] );
 		}
 
 		if ( $post['post_modified_gmt'] === '0000-00-00 00:00:00' ) {
@@ -375,10 +351,10 @@ class WP_JSON_Posts_Controller {
 			$post_fields_extended['modified_gmt'] = null;
 		}
 		else {
-			$modified_date                        = WP_JSON_DateTime::createFromFormat( 'Y-m-d H:i:s', $post['post_modified'], $timezone );
-			$post_fields['modified']              = json_mysql_to_rfc3339( $post['post_modified'] );
+			$modified_date                        = PZZ_DateTime_Helper::createFromFormat( 'Y-m-d H:i:s', $post['post_modified'], $timezone );
+			$post_fields['modified']              = PZZ_MySql_Helper::mysql_to_rfc3339( $post['post_modified'] );
 			$post_fields_extended['modified_tz']  = $modified_date->format( 'e' );
-			$post_fields_extended['modified_gmt'] = json_mysql_to_rfc3339( $post['post_modified_gmt'] );
+			$post_fields_extended['modified_gmt'] = PZZ_MySql_Helper::mysql_to_rfc3339( $post['post_modified_gmt'] );
 		}
 
 		// Consider future posts as published
@@ -400,7 +376,7 @@ class WP_JSON_Posts_Controller {
 		$_post = array_merge( $_post, $post_fields_extended );
 
 		if ( 'view-revision' == $context ) {
-			if ( json_check_post_permission( $post, 'edit' ) ) {
+			if ( PZZ_Post_Helper::check_post_permission( $post, 'edit' ) ) {
 				$_post = array_merge( $_post, $post_fields_raw );
 			} else {
 				$GLOBALS['post'] = $previous_post;
@@ -413,17 +389,17 @@ class WP_JSON_Posts_Controller {
 
 		// Entity meta
 		$links = array(
-			'self'       => json_url( '/posts/' . $post['ID'] ),
+			'self'       => PZZ_URL_Helper::convert_url_to_json_endpoint( '/posts/' . $post['ID'] ),
 		);
 
 		if ( 'view-revision' != $context ) {
-			$links['replies'] = json_url( '/posts/' . $post['ID'] . '/comments' );
+			$links['replies'] = PZZ_URL_Helper::convert_url_to_json_endpoint( '/posts/' . $post['ID'] . '/comments' );
 		}
 
 		$_post['meta'] = array( 'links' => $links );
 
 		if ( ! empty( $post['post_parent'] ) ) {
-			$_post['meta']['links']['up'] = json_url( '/posts/' . (int) $post['post_parent'] );
+			$_post['meta']['links']['up'] = PZZ_URL_Helper::convert_url_to_json_endpoint( '/posts/' . (int) $post['post_parent'] );
 		}
 
 		$GLOBALS['post'] = $previous_post;
@@ -431,12 +407,13 @@ class WP_JSON_Posts_Controller {
 			setup_postdata( $previous_post );
 		}
 
-		return apply_filters( 'json_prepare_post', $_post, $post, $context );
+		return apply_filters( 'pzz_prepare_post', $_post, $post, $context );
 	}
 
 	/**
 	 * Retrieve the post excerpt.
 	 *
+	 * @since 1.1.1
 	 * @return string
 	 */
 	private function prepare_excerpt( $excerpt ) {
@@ -455,6 +432,8 @@ class WP_JSON_Posts_Controller {
 
 	/**
 	 * Retrive the post content if available
+	 * 
+	 * @since 1.1.1
 	 */
 	private function prepare_content( $content) {
 		if ( post_password_required() ) {
@@ -467,11 +446,12 @@ class WP_JSON_Posts_Controller {
 	/**
 	 * Retrieve all meta for a post.
 	 *
+	 * @since 1.1.1
 	 * @param int $post_id Post ID
 	 * @return (array[]|WP_Error) List of meta object data on success, WP_Error otherwise
 	 */
 	private function handle_get_post_meta( $post_id ) {
-		$handler = new WP_JSON_Meta_Posts( $this->server );
+		$handler = new PZZ_JSON_Meta_Posts( $this->server );
 
 		return $handler->get_all_meta( $post_id );
 	}
@@ -479,7 +459,7 @@ class WP_JSON_Posts_Controller {
 	/**
 	 * Get version of API.
 	 * 
-	 * @since    1.0.0
+	 * @since    1.1.1
 	 * @return   string    The API version.
 	 */
 	private function get_version() {

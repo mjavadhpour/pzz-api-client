@@ -151,25 +151,26 @@ class Pzz_Api_Client
          */
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-pzz-api-client-loader.php';
 
-        // require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/lib/class-wp-json-posts.php';
         /**
-         * The class responsible for create APIs and response to the API
-         * calls.
+         * The class responsible for create APIs and response to the API calls.
          */
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-wp-json-posts-controller.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-pzz-json-posts-controller.php';
 
         /**
          *  The helper classes.
          */
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/lib/class-wp-json-comments.php';
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/lib/class-wp-json-meta.php';
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/lib/class-wp-json-meta-posts.php';
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/lib/class-wp-json-responseinterface.php';
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/lib/class-wp-json-response.php';
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/lib/class-wp-json-datetime.php';
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/lib/class-wp-json-users.php';
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/lib/class-wp-json-media.php';
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/lib/class-wp-json-taxonomies.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/utils/class-pzz-datetime.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/utils/class-pzz-url.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/utils/class-pzz-mysql.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/utils/class-pzz-post.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/lib/class-pzz-json-comments.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/lib/class-pzz-json-meta.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/lib/class-pzz-json-meta-posts.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/lib/class-pzz-json-responseinterface.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/lib/class-pzz-json-response.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/lib/class-pzz-json-users.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/lib/class-pzz-json-media.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/lib/class-pzz-json-taxonomies.php';
 
         $this->loader = new Pzz_Api_Client_Loader();
 
@@ -183,12 +184,8 @@ class Pzz_Api_Client
      */
     private function register_apis()
     {
-        $core = new WP_JSON_Posts_Controller('pzz', $this->get_api_version());
+        $core = new PZZ_JSON_Posts_Controller('pzz', $this->get_api_version());
 
-        // TODO: I think that version SHOULD be separated from the plugin version
-        // because maybe we want to handle two version of APIs in our latest plugin
-        // version. The main idea is define the routes in the version key in the $routes
-        // array.
         $routes[] = [
             'method' => 'GET',
             'path' => 'posts',
@@ -260,42 +257,43 @@ class Pzz_Api_Client
     /**
      * Register the default JSON API filters.
      *
+     * @since 1.0.0
+     * 
      * @internal This will live in default-filters.php
      *
-     * @global WP_JSON_Pages      $wp_json_pages
-     * @global WP_JSON_Media      $wp_json_media
-     * @global WP_JSON_Taxonomies $wp_json_taxonomies
+     * @global PZZ_JSON_Media      $pzz_json_media
+     * @global PZZ_JSON_Taxonomies $pzz_json_taxonomies
      *
      */
     private function json_api_default_filters()
     {
-        global $wp_json_pages, $wp_json_media, $wp_json_taxonomies;
+        global $wp_json_pages, $pzz_json_media, $pzz_json_taxonomies;
 
         // Users.
-        $wp_json_users = new WP_JSON_Users();
-        $this->loader->add_filter('json_prepare_post', $wp_json_users, 'add_post_author_data', 10, 3);
-        $this->loader->add_filter('json_prepare_comment', $wp_json_users, 'add_comment_author_data', 10, 3);
+        $pzz_json_users = new PZZ_JSON_Users();
+        $this->loader->add_filter('pzz_prepare_post', $pzz_json_users, 'add_post_author_data', 10, 3);
+        $this->loader->add_filter('pzz_prepare_comment', $pzz_json_users, 'add_comment_author_data', 10, 3);
 
         // Post meta.
-        $wp_json_post_meta = new WP_JSON_Meta_Posts();
-        $this->loader->add_filter('json_prepare_post', $wp_json_post_meta, 'add_post_meta_data', 10, 3);
+        $pzz_json_post_meta = new PZZ_JSON_Meta_Posts();
+        $this->loader->add_filter('pzz_prepare_post', $pzz_json_post_meta, 'add_post_meta_data', 10, 3);
 
         // Media.
-        $wp_json_media = new WP_JSON_Media();
-        $this->loader->add_filter('json_prepare_post', $wp_json_media, 'add_thumbnail_data', 10, 3);
+        $pzz_json_media = new PZZ_JSON_Media();
+        $this->loader->add_filter('pzz_prepare_post', $pzz_json_media, 'add_thumbnail_data', 10, 3);
 
         // Posts.
-        $wp_json_taxonomies = new WP_JSON_Taxonomies();
-        $this->loader->add_filter('json_prepare_post', $wp_json_taxonomies, 'add_term_data', 10, 3);
-        $this->loader->add_filter('json_get_taxonomies', $wp_json_taxonomies, 'get_items', 10, 1);
+        $pzz_json_taxonomies = new PZZ_JSON_Taxonomies();
+        $this->loader->add_filter('pzz_prepare_post', $pzz_json_taxonomies, 'add_term_data', 10, 3);
+        $this->loader->add_filter('pzz_get_taxonomies', $pzz_json_taxonomies, 'get_items', 10, 1);
 
         // Post comments.
-        $wp_json_comments = new WP_JSON_Comments();
-        $this->loader->add_filter('json_prepare_post_comments', $wp_json_comments, 'get_comments', 10, 1);
+        $pzz_json_comments = new PZZ_JSON_Comments();
+        $this->loader->add_filter('pzz_prepare_post_comments', $pzz_json_comments, 'get_comments', 10, 1);
 
-        // Post
-        $wp_json_post = new WP_JSON_Posts_Controller();
-        $this->loader->add_filter('json_prepare_post', $wp_json_post, 'add_target_blank_to_links', 10, 1);
+        // Post links.
+        $wp_json_post = new PZZ_Post_Helper();
+        $this->loader->add_filter('get_the_excerpt', $wp_json_post, 'add_target_blank_to_links', 10, 1);
     }
 
     /**
@@ -306,24 +304,13 @@ class Pzz_Api_Client
      */
     private function get_api_version()
     {
-        $version_array = explode(".", $this->get_version());
-
-        return isset($version_array[0]) ? $version_array[0] : '1';
-
-        // $resolved_version = '';
-        // foreach ($version_array as $version) {
-        //     $resolved_version = $resolved_version . $version;
-        // }
-        // $resolved_version = rtrim($resolved_version, '0');
-
-        // $version_array = str_split($resolved_version);
-        // $resolved_version = '';
-        // foreach ($version_array as $version) {
-        //     $resolved_version = $resolved_version . $version . '.';
-        // }
-
-        // // remove latest dot.
-        // return substr_replace($resolved_version, "", -1);
+        /**
+         * As we should handle API version separately from plugin version,
+         * then we should not depend on the plugin version, @since 1.1.1 we
+         * hard code the API version instead of resolving it from plugin
+         * version.
+         */
+        return '1';
     }
 
 }

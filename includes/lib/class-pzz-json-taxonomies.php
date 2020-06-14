@@ -1,9 +1,13 @@
 <?php
 
-class WP_JSON_Taxonomies {
+/**
+ * @since 1.1.1
+ */
+class PZZ_JSON_Taxonomies {
 	/**
 	 * Add term data to post data
 	 *
+	 * @since 1.1.1
 	 * @param array $data Post data
 	 * @param array $post Internal post data
 	 * @param string $context Post context
@@ -27,7 +31,7 @@ class WP_JSON_Taxonomies {
 	}
 
 	/**
-	 * 
+	 * @since 1.1.1
 	 */
 	public function get_items( $request ) {
 		$taxonomy_type = $request->get_url_params()['taxonomy_type'];
@@ -74,8 +78,7 @@ class WP_JSON_Taxonomies {
 	/**
 	 * Prepares a taxonomy object for serialization.
 	 *
-	 * @since 4.7.0
-	 *
+	 * @since 1.1.1
 	 * @param stdClass        $taxonomy Taxonomy data.
 	 * @param WP_REST_Request $request  Full details about the request.
 	 * @return WP_REST_Response Response object.
@@ -103,6 +106,7 @@ class WP_JSON_Taxonomies {
 	/**
 	 * Prepare term data for serialization
 	 *
+	 * @since 1.1.1
 	 * @param array|object $term The unprepared term data
 	 * @return array The prepared term data
 	 */
@@ -120,8 +124,7 @@ class WP_JSON_Taxonomies {
 		/**
 	 * Checks whether a given request has permission to read taxonomies.
 	 *
-	 * @since 4.7.0
-	 *
+	 * @since 1.1.1
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return true|WP_Error True if the request has read access, WP_Error object otherwise.
 	 */
@@ -145,8 +148,7 @@ class WP_JSON_Taxonomies {
 	/**
 	 * Retrieves the query params for collections.
 	 *
-	 * @since 4.7.0
-	 *
+	 * @since 1.1.1
 	 * @return array Collection parameters.
 	 */
 	public function get_collection_params() {
