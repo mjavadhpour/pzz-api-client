@@ -154,7 +154,7 @@ class Pzz_Api_Client
         /**
          * The class responsible for create APIs and response to the API calls.
          */
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-pzz-json-posts-controller.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-pzz-api-controller.php';
 
         /**
          *  The helper classes.
@@ -184,7 +184,7 @@ class Pzz_Api_Client
      */
     private function register_apis()
     {
-        $core = new PZZ_JSON_Posts_Controller('pzz', $this->get_api_version());
+        $core = new PZZ_API_Controller('pzz', $this->get_api_version());
 
         $routes[] = [
             'method' => 'GET',

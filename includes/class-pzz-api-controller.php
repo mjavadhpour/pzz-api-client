@@ -3,19 +3,19 @@
 /**
  * The core functionality of the plugin.
  *
- * @since      1.1.1
+ * @since      1.2.0
  * @package    Pzz_Api_Client
  * @subpackage Pzz_Api_Client/includes
  * @author     MJHP <mjavadhpour@gmail.com>
  * 
  * TODO: Check for refactor with this link: <a>https://upnrunn.com/blog/2018/04/how-to-extend-wp-rest-api-from-your-custom-plugin-part-3/</a>
  */
-class PZZ_JSON_Posts_Controller {
+class PZZ_API_Controller {
 
 	/**
 	 * The namespace of APIs.
 	 *
-	 * @since    1.1.1
+	 * @since    1.2.0
 	 * @access   private
 	 * @var      string    $namespace    The namespace of APIs.
 	 */
@@ -24,7 +24,7 @@ class PZZ_JSON_Posts_Controller {
 	/**
 	 * The version of the APIs.
 	 *
-	 * @since    1.1.1
+	 * @since    1.2.0
 	 * @access   private
 	 * @var      string    $version    The version of the APIs.
 	 */
@@ -33,7 +33,7 @@ class PZZ_JSON_Posts_Controller {
 	/**
 	 * Initialize the class and set its properties.
 	 *
-	 * @since      1.1.1
+	 * @since      1.2.0
 	 * @param      string                   $plugin_name       The namespace of APIs.
 	 * @param      string                   $version           The version of the APIs.
 	 */
@@ -48,7 +48,7 @@ class PZZ_JSON_Posts_Controller {
 	 * Build API route with given arguments. the namespace and the version
 	 * come from the inner class properties.
 	 *
-	 * @since    1.1.1
+	 * @since    1.2.0
 	 * @param    function    $callback    The function that was executed when the endpoint was called.
 	 * @param    string      $path        The path of the API. You can start path with the "/" character or not; it was optional.
 	 * @param    string      $method      The API HTTP method.
@@ -78,7 +78,7 @@ class PZZ_JSON_Posts_Controller {
 	 *               tag
 	 *               tag_id
 	 * 
-	 * @since    1.1.1
+	 * @since    1.2.0
 	 * @param    WP_REST_Request   $request    Wordpress rest request object; passed by the WordPress.
 	 */
 	public function get_posts( $request ) {
@@ -161,7 +161,7 @@ class PZZ_JSON_Posts_Controller {
 	/**
 	 * Retrieve a post.
 	 *
-	 * @since 1.1.1
+	 * @since 1.2.0
 	 * @uses get_post()
 	 * @param int|WP_REST_Request $id Post ID or WP_REST_Request object.
 	 * @param string $context The context; 'view' (default) or 'edit'.
@@ -220,7 +220,7 @@ class PZZ_JSON_Posts_Controller {
 	/**
 	 * Retrieve the post comments.
 	 *
-	 * @since 1.1.1
+	 * @since 1.2.0
 	 * @uses get_post_comments()
 	 * @param int|WP_REST_Request $id Post ID or WP_REST_Request object.
 	 * @return array Comment entity
@@ -230,7 +230,7 @@ class PZZ_JSON_Posts_Controller {
 	}
 
 	/**
-	 * @since 1.1.1
+	 * @since 1.2.0
 	 */
 	public function get_taxonomies( $request ) {
 		return apply_filters( 'pzz_get_taxonomies', $request );
@@ -239,7 +239,7 @@ class PZZ_JSON_Posts_Controller {
 	/**
 	 * Prepares post data for return in an XML-RPC object.
 	 *
-	 * @since 1.1.1
+	 * @since 1.2.0
 	 * @access private
 	 * @param array $post The unprepared post data
 	 * @param string $context The context for the prepared post. (view|view-revision|edit|embed|single-parent)
@@ -413,7 +413,7 @@ class PZZ_JSON_Posts_Controller {
 	/**
 	 * Retrieve the post excerpt.
 	 *
-	 * @since 1.1.1
+	 * @since 1.2.0
 	 * @return string
 	 */
 	private function prepare_excerpt( $excerpt ) {
@@ -433,7 +433,7 @@ class PZZ_JSON_Posts_Controller {
 	/**
 	 * Retrive the post content if available
 	 * 
-	 * @since 1.1.1
+	 * @since 1.2.0
 	 */
 	private function prepare_content( $content) {
 		if ( post_password_required() ) {
@@ -446,7 +446,7 @@ class PZZ_JSON_Posts_Controller {
 	/**
 	 * Retrieve all meta for a post.
 	 *
-	 * @since 1.1.1
+	 * @since 1.2.0
 	 * @param int $post_id Post ID
 	 * @return (array[]|WP_Error) List of meta object data on success, WP_Error otherwise
 	 */
@@ -459,7 +459,7 @@ class PZZ_JSON_Posts_Controller {
 	/**
 	 * Get version of API.
 	 * 
-	 * @since    1.1.1
+	 * @since    1.2.0
 	 * @return   string    The API version.
 	 */
 	private function get_version() {

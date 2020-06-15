@@ -3,7 +3,7 @@
 /**
  * @since 1.1.1
  */
-class PZZ_JSON_Media extends PZZ_JSON_Posts_Controller {
+class PZZ_JSON_Media extends PZZ_API_Controller {
 	/**
 	 * Add the featured image data to the post data
 	 *
@@ -34,7 +34,7 @@ class PZZ_JSON_Media extends PZZ_JSON_Posts_Controller {
 	/**
 	 * Retrieve a attachment
 	 *
-	 * @see PZZ_JSON_Posts_Controller::get_post()
+	 * @see PZZ_API_Controller::get_post()
 	 * 
 	 * @since 1.1.1
 	 */
