@@ -33,31 +33,35 @@ class PZZ_URL_Helper {
 	/**
 	 * Get URL to a JSON endpoint.
 	 *
+	 * @since 1.1.2 Add new optional argument $namespace
 	 * @since 1.1.1
 	 * @param string $path   Optional. JSON route. Default empty.
 	 * @param string $scheme Optional. Sanitization scheme. Default 'json'.
+	 * @param string $namespace Optional. Default '/pzz/v1/'.
 	 * @return string Full URL to the endpoint.
 	 */
-	public static function convert_url_to_json_endpoint( $path = '', $scheme = 'json' ) {
-		return self::get_json_url( null, $path, $scheme );
+	public static function convert_url_to_json_endpoint( $path = '', $scheme = 'json', $namespace = '/pzz/v1/' ) {
+		return self::get_json_url( null, $path, $scheme, $namespace );
 	}
 
 	/**
 	 * Get URL to a JSON endpoint on a site.
 	 *
+	 * @since 1.1.2 Add new optional argument $namespace
 	 * @since 1.1.1
 	 * @todo Check if this is even necessary
 	 * @param int    $blog_id Blog ID.
 	 * @param string $path    Optional. JSON route. Default empty.
 	 * @param string $scheme  Optional. Sanitization scheme. Default 'json'.
+	 * @param string $namespace Optional. Default '/pzz/v1/'.
 	 * @return string Full URL to the endpoint.
 	 */
-	private static function get_json_url( $blog_id = null, $path = '', $scheme = 'json' ) {
+	private static function get_json_url( $blog_id = null, $path = '', $scheme = 'json', $namespace = '/pzz/v1/' ) {
 		if ( get_option( 'permalink_structure' ) ) {
 			$url = get_home_url( $blog_id, self::json_get_url_prefix(), $scheme );
 
 			if ( ! empty( $path ) && is_string( $path ) && strpos( $path, '..' ) === false )
-				$url .= '/pzz/v1/' . ltrim( $path, '/' );
+				$url .= $namespace . ltrim( $path, '/' );
 		} else {
 			$url = trailingslashit( get_home_url( $blog_id, '', $scheme ) );
 
