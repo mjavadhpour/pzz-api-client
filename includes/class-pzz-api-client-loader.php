@@ -103,8 +103,13 @@ class Pzz_Api_Client_Loader {
 	 * @since    1.0.0
 	 */
 	public function run() {
+		/**
+		 * Current wordpress logged in user
+		 * 
+		 * @since    1.2.0
+		 */
 		global $current_user;
-		
+
 		foreach ( $this->filters as $hook ) {
 			add_filter( $hook['hook'], array( $hook['component'], $hook['callback'] ), $hook['priority'], $hook['accepted_args'] );
 		}
@@ -113,8 +118,12 @@ class Pzz_Api_Client_Loader {
 
 			if ($hook['type'] === 'rest_api_init') {
 
-				add_action( 'rest_api_init', function() use ( $hook ) { 
-					// Resolved as: new Pzz_Api_Client_Controller()->build_route()
+				/**
+				 * @since    1.2.0 Pass current logged in user to all actions.
+				 * @since    1.0.0
+				 */
+				add_action( 'rest_api_init', function() use ( $hook, $current_user ) { 
+					// Resolved as: new PZZ_API_Controller()->build_route()
 					$hook['component']->{$hook['callback']}( 
 						/**
 						 * This function called as a callback function when API was called; and will returned
@@ -123,10 +132,10 @@ class Pzz_Api_Client_Loader {
 						 * @param    WP_REST_Request    $request    Wordpress rest request object; 
 						 *                                          passed by WordPress.
 						 */
-						function ( $request ) use ( $hook ) {
+						function ( $request ) use ( $hook, $current_user ) {
 
-							// Resolved as: new Pzz_Api_Client_Controller()->api_function_name()
-							return $hook['component']->{$hook['api_function_name']}( $request );
+							// Resolved as: new PZZ_API_Controller()->api_function_name()
+							return $hook['component']->{$hook['api_function_name']}( $request, $current_user );
 						}, 
 						$hook['api_route'], 
 						$hook['api_method'],
