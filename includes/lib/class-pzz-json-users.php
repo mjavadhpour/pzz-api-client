@@ -53,8 +53,8 @@ class PZZ_JSON_Users {
 
 		$user_fields['meta'] = array(
 			'links' => array(
-				'self' => PZZ_URL_Helper::convert_url_to_json_endpoint( '/users/' . $user->ID ),
-				'archives' => PZZ_URL_Helper::convert_url_to_json_endpoint( '/users/' . $user->ID . '/posts' ),
+				'self' => PZZ_URL_Helper::convert_url_to_json_endpoint( '/users/' . $user->ID, 'json', '/wp/v2/' ),
+				'archives' => '',
 			),
 		);
 
