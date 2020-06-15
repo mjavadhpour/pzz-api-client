@@ -5,6 +5,14 @@
  */
 class PZZ_JSON_Meta_Posts extends PZZ_JSON_Meta {
 	/**
+	 * Associated object type.
+	 *
+	 * @since 1.1.2
+	 * @var string Type slug ("post" or "user")
+	 */
+	protected $type = 'post';
+
+	/**
 	 * Check that the object can be accessed.
 	 *
 	 * @since 1.1.1
