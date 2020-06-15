@@ -89,4 +89,4 @@ function run_pzz_api_client() {
 
 }
 
-run_pzz_api_client();
+add_action('init', 'run_pzz_api_client');

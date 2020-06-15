@@ -103,7 +103,8 @@ class Pzz_Api_Client_Loader {
 	 * @since    1.0.0
 	 */
 	public function run() {
-
+		global $current_user;
+		
 		foreach ( $this->filters as $hook ) {
 			add_filter( $hook['hook'], array( $hook['component'], $hook['callback'] ), $hook['priority'], $hook['accepted_args'] );
 		}
