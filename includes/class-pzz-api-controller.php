@@ -75,6 +75,29 @@ class PZZ_API_Controller {
 	}
 
 	/**
+	 * Get current logged in user info.
+	 * 
+	 * @since    1.2.0
+	 * @param    WP_REST_Request   $request      Wordpress rest request object; passed by the WordPress.
+	 * @param    WP_User           $current_user Current logged in user.
+	 */
+	public function get_current_logged_in_user_info( $request, $current_user ) {
+		/**
+		 * first name
+		 * last name
+		 * email address
+		 * nikname
+		 * display name
+		 * website
+		 * biographical info
+		 * password
+		 * re-password
+		 */
+		$response   = new PZZ_JSON_Response();
+		return $response;
+	}
+
+	/**
 	 * Get list of posts with custom schema.
 	 * 
 	 * query params: posts_per_page
