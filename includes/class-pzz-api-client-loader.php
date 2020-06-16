@@ -78,9 +78,10 @@ class Pzz_Api_Client_Loader {
 	 * @param    string               $path             The API url, when called, we execute the callback function.
 	 * @param    string               $method           The API HTTP method (GET, POST, PUT, DELETE).
 	 * @param    function             $args             The fucntion that return array of arguments.
+	 * @param    boolean              $is_secure        A variable that turn authorization check on or off.
 	 */
-	public function add_rest_api_action( $hook, $component, $callback, $api_route, $api_method, $api_function_name, $args ) {
-		$this->actions = $this->add_rest_route( $this->actions, $hook, $component, $callback, $api_route, $api_method, $api_function_name, $args );
+	public function add_rest_api_action( $hook, $component, $callback, $api_route, $api_method, $api_function_name, $args, $is_secure ) {
+		$this->actions = $this->add_rest_route( $this->actions, $hook, $component, $callback, $api_route, $api_method, $api_function_name, $args, $is_secure );
 	}
 
 	/**
@@ -139,7 +140,9 @@ class Pzz_Api_Client_Loader {
 						}, 
 						$hook['api_route'], 
 						$hook['api_method'],
-						$hook['args']
+						$hook['args'],
+						$current_user, 
+						$hook['is_secure']
 					); 
 				});
 
@@ -195,9 +198,10 @@ class Pzz_Api_Client_Loader {
 	 * @param    string               $api_method           The HTTP method of API.
 	 * @param    string               $api_function_name    The function name in the $component that was responsible to handle registered API.
 	 * @param    function             $args                 The fucntion that return array of arguments.
+	 * @param    boolean              $is_secure        A variable that turn authorization check on or off.
 	 * @return   array                                      The collection of actions and filters registered with WordPress.
 	 */
-	private function add_rest_route( $hooks, $hook, $component, $callback, $api_route, $api_method, $api_function_name, $args ) {
+	private function add_rest_route( $hooks, $hook, $component, $callback, $api_route, $api_method, $api_function_name, $args, $is_secure ) {
 		
 		$hooks[] = array(
 			'hook'              => $hook,
@@ -207,7 +211,8 @@ class Pzz_Api_Client_Loader {
 			'api_method'        => $api_method,
 			'api_function_name' => $api_function_name,
 			'args'              => $args,
-			'type'              => 'rest_api_init'
+			'type'              => 'rest_api_init',
+			'is_secure'         => $is_secure
 		);
 
 		return $hooks;

@@ -53,16 +53,23 @@ class PZZ_API_Controller {
 	 * @param    string      $path        The path of the API. You can start path with the "/" character or not; it was optional.
 	 * @param    string      $method      The API HTTP method.
 	 */
-	public function build_route( $callback, $path, $method, $args = array() ) {
+	public function build_route( $callback, $path, $method, $args = array(), $current_user, $is_secure = false ) {
 
 		if ($args == null) {
 			$args = array();
 		}
 
+		/**
+		 * @since    1.2.0 Add permission callback.
+		 * @since    1.0.0
+		 */
 		register_rest_route( $this->namespace . '/' . $this->get_version(), $path, array(
 			'methods' => $method,
 			'callback' => $callback,
-			'args' => $args
+			'args' => $args,
+			'permission_callback' => function ( $test ) use ( $is_secure, $current_user ) {
+				return !$is_secure || ( $is_secure && ( is_a( $current_user, 'WP_User' ) && $current_user->ID > 0 ) );
+			}
 		));
 
 	}

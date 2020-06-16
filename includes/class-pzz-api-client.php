@@ -249,7 +249,8 @@ class Pzz_Api_Client
                 $route['path'],
                 $route['method'],
                 $route['callback'],
-                $route['args']()
+                $route['args'](),
+                $route['is_secure']
             );
         }
     }
