@@ -15,8 +15,8 @@
  * @wordpress-plugin
  * Plugin Name:       PZZ WordPress Simple API
  * Plugin URI:        https://github.com/mjavadhpour/pzz-api-client
- * Description:       این افزونه ارائه دهنده <strong>رابط برنامه‌نویسی وب</strong> به صورت ساده شده برای استفاده در اپلیکیشن‌سازهای آنلاین است
- * Version:           1.1.2
+ * Description:       This plugin provides simple <strong>RESTful API</strong>, developed specifically for <strong>Mobile clients</strong> that want to connect to your WordPress website.
+ * Version:           1.1.3
  * Author:            MJavad Hpour
  * Author URI:        https://www.linkedin.com/in/mjavadhpour/
  * License:           GPL-2.0+
@@ -38,7 +38,7 @@ if ( ! defined( 'WPINC' ) ) {
  * 
  * @since 1.0.0
  */
-define( 'PZZ_API_CLIENT_VERSION', '1.1.2' );
+define( 'PZZ_API_CLIENT_VERSION', '1.1.3' );
 
 /**
  * The code that runs during plugin activation.
