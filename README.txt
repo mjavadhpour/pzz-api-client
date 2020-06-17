@@ -1,4 +1,4 @@
-=== PZZ WordPress Simple API ===
+=== PZZ API Client ===
 Contributors: mjavadhpour
 Tags: RESTful API
 Requires at least: 3.0.1
@@ -21,6 +21,9 @@ Download the latest stable version from https://github.com/mjavadhpour/pzz-api-c
 Feel free to open an Issue at https://github.com/mjavadhpour/pzz-api-client/issues, Also you can track the developing process from https://github.com/mjavadhpour/pzz-api-client/milestones.
 
 == Changelog ==
+= 1.1.4 =
+* Fix wordpress trademarked name with plugin name.
+
 = 1.1.3 =
 * Update readme and plugin description.
 
