@@ -82,15 +82,6 @@ class PZZ_API_Controller {
 	 * @param    WP_User           $current_user Current logged in user.
 	 */
 	public function get_current_logged_in_user_info( $request, $current_user ) {
-		/**
-		 * first name
-		 * last name
-		 * email address
-		 * nikname
-		 * display name
-		 * website
-		 * biographical info
-		 */
 		
 		if ( empty( $current_user->id ) ) {
 			return new WP_Error(
@@ -125,28 +116,19 @@ class PZZ_API_Controller {
 		 ];
 
 
-		$user_meta = get_user_meta( $current_user->id);
-		$user_data = json_decode(json_encode( get_userdata( $current_user->id )->data ), true);
-		$data = array_merge( $user_data, $user_meta );
+		$data['meta'] = get_user_meta( $current_user->id );
+
+		$data['user'] = (array) ( get_userdata( $current_user->id )->data );
+
+		$data = array_merge( $data['meta'], $data['user'] );
+
 		$data['avatar'] = get_avatar( $current_user->ID, 64 );
 
-		$data = $this->get_elements( $data, $allowed_parameters);
+		$data = $this->get_elements( $data, $allowed_parameters );
 		
 		$response->set_data( $data );
 
 		return $response;
-	}
-
-		/**
-	 * Get all of the given elements from an array.
-	 * 
-	 * @since    1.2.0 get user information.
-	 * @param    Array   $data          The array of data that we want to retrive given elements from.
-	 * @param    Array   $elements      Elements names.
-	 * @
-	 */
-	public function get_elements ( $data, $elements ) {
-		return array_intersect_key($data, array_flip($elements));
 	}
 
 	/**
@@ -547,5 +529,19 @@ class PZZ_API_Controller {
 	private function get_version() {
 		return 'v' . $this->version;
 	}
+
+	/**
+	 * Get all of the given elements from an array.
+	 * 
+	 * @since    1.2.0 get user information.
+	 * @param    Array   $data          The array of data that we want to retrive given elements from.
+	 * @param    Array   $elements      Elements names.
+	 * @
+	 */
+	
+	private function get_elements ( $data, $elements ) {
+		return array_intersect_key($data, array_flip($elements));
+	}
+
 
 }
