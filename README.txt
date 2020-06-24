@@ -22,7 +22,7 @@ Feel free to open an Issue at https://github.com/mjavadhpour/pzz-api-client/issu
 
 == Changelog ==
 = 1.1.4 =
-* Fix wordpress trademarked name with plugin name.
+* Remove WordPress trademarked name from the plugin name.
 
 = 1.1.3 =
 * Update readme and plugin description.

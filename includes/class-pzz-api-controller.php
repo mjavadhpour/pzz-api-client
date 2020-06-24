@@ -75,6 +75,63 @@ class PZZ_API_Controller {
 	}
 
 	/**
+	 * Get current logged in user info.
+	 * 
+	 * @since    1.2.0
+	 * @param    WP_REST_Request   $request      Wordpress rest request object; passed by the WordPress.
+	 * @param    WP_User           $current_user Current logged in user.
+	 */
+	public function get_current_logged_in_user_info( $request, $current_user ) {
+		
+		if ( empty( $current_user->id ) ) {
+			return new WP_Error(
+				'rest_not_logged_in',
+				__( 'You are not currently logged in.' ),
+				array( 'status' => 401 )
+			);
+		}
+
+		
+		$response   = new PZZ_JSON_Response();
+
+		/**
+		 * elements that need to be in response.
+		*/
+		$allowed_parameters = [
+			'nickname',
+			'first_name',
+			'last_name',
+			'description',
+			'locale',
+			'wp_capabilities',
+			'ID',
+			'user_login',
+			'user_nicename',
+			'user_email',
+			'user_url',
+			'user_registered',
+			'user_status',
+			'display_name',
+			'avatar',
+		 ];
+
+
+		$data['meta'] = get_user_meta( $current_user->id );
+
+		$data['user'] = (array) ( get_userdata( $current_user->id )->data );
+
+		$data = array_merge( $data['meta'], $data['user'] );
+
+		$data['avatar'] = get_avatar( $current_user->ID, 64 );
+
+		$data = $this->get_elements( $data, $allowed_parameters );
+		
+		$response->set_data( $data );
+
+		return $response;
+	}
+
+	/**
 	 * Get list of posts with custom schema.
 	 * 
 	 * query params: posts_per_page
@@ -473,4 +530,16 @@ class PZZ_API_Controller {
 		return 'v' . $this->version;
 	}
 
+	/**
+	 * Get all of the given elements from an array.
+	 * 
+	 * @since    1.2.0 get user information.
+	 * @param    Array   $data          The array of data that we want to retrive given elements from.
+	 * @param    Array   $elements      Elements names.
+	 * @
+	 */
+	
+	private function get_elements ( $data, $elements ) {
+		return array_intersect_key($data, array_flip($elements));
+	}
 }

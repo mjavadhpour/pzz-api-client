@@ -241,6 +241,24 @@ class Pzz_Api_Client
             },
         ];
 
+        $routes[] = [
+            'method' => 'GET',
+            'path' => 'whoami',
+            'callback' => 'get_current_logged_in_user_info',
+            'args' => function () {
+                return (array(
+                    'Authorization' => array(
+                        'validate_callback' => function ($param, $request, $key) {
+                            return is_numeric($param);
+                        },
+                        'description' => 'JWT Bearer token should be placed in the request header.',
+                        'type' => 'string'
+                    ),
+                ));
+            },
+            'is_secure' => true
+        ];
+
         foreach ($routes as $route) {
             $this->loader->add_rest_api_action(
                 'rest_api_init',
