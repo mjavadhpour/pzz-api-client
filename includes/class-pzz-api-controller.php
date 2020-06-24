@@ -542,6 +542,4 @@ class PZZ_API_Controller {
 	private function get_elements ( $data, $elements ) {
 		return array_intersect_key($data, array_flip($elements));
 	}
-
-
 }

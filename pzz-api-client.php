@@ -91,7 +91,7 @@ function run_pzz_api_client() {
 
 /**
  * @since    1.2.0 Use init event to run plugin after all WordPress
- * 			 init process.
+ * 			     init process.
  * @since    1.0.0
  */
 add_action('init', 'run_pzz_api_client');
