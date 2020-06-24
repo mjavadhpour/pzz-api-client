@@ -153,8 +153,10 @@ class Pzz_Api_Client
 
         /**
          * The class responsible for create APIs and response to the API calls.
+         * TODO: Refactor the controller includes process. @see {Automattic\WooCommerce\RestApi\Server}
          */
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-pzz-api-controller.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-pzz-wc-api-controller.php';
 
         /**
          *  The helper classes.
@@ -184,10 +186,15 @@ class Pzz_Api_Client
      */
     private function register_apis()
     {
-        $core = new PZZ_API_Controller('pzz', $this->get_api_version());
+        /**
+         * Wordpress related routes.
+         * @since    1.0.0
+         */
+        $core = new PZZ_API_Controller('pzz', $this->get_api_version('wp'));
 
         $routes[] = [
             'method' => 'GET',
+            'handler' => $core,
             'path' => 'posts',
             'callback' => 'get_posts',
             'args' => function () {
@@ -197,6 +204,7 @@ class Pzz_Api_Client
 
         $routes[] = [
             'method' => 'GET',
+            'handler' => $core,
             'path' => 'taxonomies/(?P<taxonomy_type>\w+)',
             'callback' => 'get_taxonomies',
             'args' => function () {
@@ -213,6 +221,7 @@ class Pzz_Api_Client
 
         $routes[] = [
             'method' => 'GET',
+            'handler' => $core,
             'path' => 'posts/(?P<id>\d+)/comments',
             'callback' => 'get_post_comments',
             'args' => function () {
@@ -228,6 +237,7 @@ class Pzz_Api_Client
 
         $routes[] = [
             'method' => 'GET',
+            'handler' => $core,
             'path' => 'posts/(?P<id>\d+)',
             'callback' => 'get_post',
             'args' => function () {
@@ -243,6 +253,7 @@ class Pzz_Api_Client
 
         $routes[] = [
             'method' => 'GET',
+            'handler' => $core,
             'path' => 'whoami',
             'callback' => 'get_current_logged_in_user_info',
             'args' => function () {
@@ -259,10 +270,20 @@ class Pzz_Api_Client
             'is_secure' => true
         ];
 
+        /**
+         * Woocommerce related routes
+         * @since    1.2.0
+         */
+        $wc_core = new PZZ_WC_API_Controller('pzz/wc', $this->get_api_version('wc'));
+
+        /**
+         * @since    1.2.0 Get handler from $routes.
+         * @since    1.0.0
+         */
         foreach ($routes as $route) {
             $this->loader->add_rest_api_action(
                 'rest_api_init',
-                $core,
+                $route['handler'],
                 'build_route',
                 $route['path'],
                 $route['method'],
@@ -318,10 +339,12 @@ class Pzz_Api_Client
     /**
      * Resolve the API version with the plugin version.
      *
+     * @since     1.2.0     Add $group to handle woocommerce endpoints
+     *                      inside wordpress endpoints.
      * @since     1.0.0
      * @return    string    The version number of the api.
      */
-    private function get_api_version()
+    private function get_api_version($group = null)
     {
         /**
          * As we should handle API version separately from plugin version,
@@ -329,7 +352,13 @@ class Pzz_Api_Client
          * hard code the API version instead of resolving it from plugin
          * version.
          */
-        return '1';
+        switch ($group) {
+            case 'wp':
+                return '1';
+            case 'wc':
+                return '1';
+            default:
+                return '1';
+        }
     }
-
 }
