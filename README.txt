@@ -6,6 +6,7 @@ Tested up to: 5.4.2
 Requires PHP: 5.6
 License: GPL-2.0+
 License URI: http://www.gnu.org/licenses/gpl-2.0.txt
+Stable tag: 1.1.5
 
 This plugin provides simple RESTful API, developed specifically for Mobile clients that want to connect to your WordPress website.
 
@@ -21,8 +22,11 @@ Download the latest stable version from https://github.com/mjavadhpour/pzz-api-c
 Feel free to open an Issue at https://github.com/mjavadhpour/pzz-api-client/issues, Also you can track the developing process from https://github.com/mjavadhpour/pzz-api-client/milestones.
 
 == Changelog ==
+= 1.1.5 =
+* Resolve conflicts with reactor-core.
+
 = 1.1.4 =
-* Fix wordpress trademarked name with plugin name.
+* Fix WordPress trademarked name with plugin name.
 
 = 1.1.3 =
 * Update readme and plugin description.
