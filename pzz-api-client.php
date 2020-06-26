@@ -16,7 +16,7 @@
  * Plugin Name:       PZZ API Client
  * Plugin URI:        https://github.com/mjavadhpour/pzz-api-client
  * Description:       This plugin provides simple <strong>RESTful API</strong>, developed specifically for <strong>Mobile clients</strong> that want to connect to your WordPress website.
- * Version:           1.1.4
+ * Version:           1.1.5
  * Author:            MJavad Hpour
  * Author URI:        https://www.linkedin.com/in/mjavadhpour/
  * License:           GPL-2.0+
@@ -38,7 +38,7 @@ if ( ! defined( 'WPINC' ) ) {
  * 
  * @since 1.0.0
  */
-define( 'PZZ_API_CLIENT_VERSION', '1.1.4' );
+define( 'PZZ_API_CLIENT_VERSION', '1.1.5' );
 
 /**
  * The code that runs during plugin activation.
