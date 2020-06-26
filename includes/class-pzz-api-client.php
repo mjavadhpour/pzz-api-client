@@ -131,11 +131,6 @@ class Pzz_Api_Client
      *
      * Include the following files that make up the plugin:
      *
-     * - Pzz_Api_Client_Loader. Orchestrates the hooks of the plugin.
-     * - Pzz_Api_Client_i18n. Defines internationalization functionality.
-     * - Pzz_Api_Client_Admin. Defines all hooks for the admin area.
-     * - Pzz_Api_Client_Public. Defines all hooks for the public side of the site.
-     *
      * Create an instance of the loader which will be used to register the hooks
      * with WordPress.
      *
@@ -144,6 +139,11 @@ class Pzz_Api_Client
      */
     private function load_dependencies()
     {
+
+        /**
+         * Exception classes.
+         */
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/exceptions/class-pzz-exception.php';
 
         /**
          * The class responsible for orchestrating the actions and filters of the
@@ -155,8 +155,11 @@ class Pzz_Api_Client
          * The class responsible for create APIs and response to the API calls.
          * TODO: Refactor the controller includes process. @see {Automattic\WooCommerce\RestApi\Server}
          */
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-pzz-api-controller.php';
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-pzz-wc-api-controller.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/lib/woocommerce/extends/api/class-pzz-wc-api-server.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/lib/woocommerce/extends/api/class-pzz-wc-api-resource.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/lib/woocommerce/extends/api/class-pzz-wc-api-orders.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/lib/api/class-pzz-api-controller.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/lib/api/class-pzz-wc-api-controller.php';
 
         /**
          *  The helper classes.
@@ -275,6 +278,17 @@ class Pzz_Api_Client
          * @since    1.2.0
          */
         $wc_core = new PZZ_WC_API_Controller('pzz/wc', $this->get_api_version('wc'));
+
+        $routes[] = [
+            'method' => 'GET',
+            'handler' => $wc_core,
+            'path' => 'orders',
+            'callback' => 'get_current_user_orders',
+            'args' => function () {
+                return [];
+            },
+            'is_secure' => true
+        ];
 
         /**
          * @since    1.2.0 Get handler from $routes.
