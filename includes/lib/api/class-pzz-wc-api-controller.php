@@ -73,7 +73,7 @@ class PZZ_WC_API_Controller {
 	}
 
 	/**
-	 * Get orders of current logged in user
+	 * Get orders of current logged in user.
 	 *
 	 * @since    1.2.0
 	 * @param    WP_REST_Request   $request      Wordpress rest request object; passed by the WordPress.
