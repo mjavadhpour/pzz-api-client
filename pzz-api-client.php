@@ -46,7 +46,7 @@ define( 'PZZ_API_CLIENT_VERSION', 'develop' );
  * 
  * @since 1.0.0
  */
-function activate_pzz_api_client() {
+function pzz_api_client_activate() {
 	require_once plugin_dir_path( __FILE__ ) . 'includes/class-pzz-api-client-activator.php';
 	Pzz_Api_Client_Activator::activate();
 }
@@ -57,13 +57,13 @@ function activate_pzz_api_client() {
  * 
  * @since 1.0.0
  */
-function deactivate_pzz_api_client() {
+function pzz_api_client_deactivate() {
 	require_once plugin_dir_path( __FILE__ ) . 'includes/class-pzz-api-client-deactivator.php';
 	Pzz_Api_Client_Deactivator::deactivate();
 }
 
-register_activation_hook( __FILE__, 'activate_pzz_api_client' );
-register_deactivation_hook( __FILE__, 'deactivate_pzz_api_client' );
+register_activation_hook( __FILE__, 'pzz_api_client_activate' );
+register_deactivation_hook( __FILE__, 'pzz_api_client_deactivate' );
 
 /**
  * The core plugin class that is used to define internationalization,
@@ -82,7 +82,7 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-pzz-api-client.php';
  *
  * @since    1.0.0
  */
-function run_pzz_api_client() {
+function pzz_api_client_run() {
 
 	$plugin = new Pzz_Api_Client();
 	$plugin->run();
@@ -94,4 +94,4 @@ function run_pzz_api_client() {
  * 			     init process.
  * @since    1.0.0
  */
-add_action('init', 'run_pzz_api_client');
+add_action('init', 'pzz_api_client_run');
