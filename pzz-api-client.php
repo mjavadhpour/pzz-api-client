@@ -42,28 +42,28 @@ define( 'PZZ_API_CLIENT_VERSION', '1.1.5' );
 
 /**
  * The code that runs during plugin activation.
- * This action is documented in includes/class-pzz-api-client-activator.php
+ * This action is documented in includes/pzz-api-client-activator.class.php
  * 
  * @since 1.0.0
  */
-function activate_pzz_api_client() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-pzz-api-client-activator.php';
+function pzz_api_client_activate() {
+	require_once plugin_dir_path( __FILE__ ) . 'includes/pzz-api-client-activator.class.php';
 	Pzz_Api_Client_Activator::activate();
 }
 
 /**
  * The code that runs during plugin deactivation.
- * This action is documented in includes/class-pzz-api-client-deactivator.php
+ * This action is documented in includes/pzz-api-client-deactivator.class.php
  * 
  * @since 1.0.0
  */
-function deactivate_pzz_api_client() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-pzz-api-client-deactivator.php';
+function pzz_api_client_deactivate() {
+	require_once plugin_dir_path( __FILE__ ) . 'includes/pzz-api-client-deactivator.class.php';
 	Pzz_Api_Client_Deactivator::deactivate();
 }
 
-register_activation_hook( __FILE__, 'activate_pzz_api_client' );
-register_deactivation_hook( __FILE__, 'deactivate_pzz_api_client' );
+register_activation_hook( __FILE__, 'pzz_api_client_activate' );
+register_deactivation_hook( __FILE__, 'pzz_api_client_deactivate' );
 
 /**
  * The core plugin class that is used to define internationalization,
@@ -71,7 +71,7 @@ register_deactivation_hook( __FILE__, 'deactivate_pzz_api_client' );
  * 
  * @since 1.0.0
  */
-require plugin_dir_path( __FILE__ ) . 'includes/class-pzz-api-client.php';
+require plugin_dir_path( __FILE__ ) . 'includes/pzz-api-client.class.php';
 
 /**
  * Begins execution of the plugin.
@@ -82,11 +82,11 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-pzz-api-client.php';
  *
  * @since    1.0.0
  */
-function run_pzz_api_client() {
+function pzz_api_client_run() {
 
 	$plugin = new Pzz_Api_Client();
 	$plugin->run();
 
 }
 
-run_pzz_api_client();
+pzz_api_client_run();
