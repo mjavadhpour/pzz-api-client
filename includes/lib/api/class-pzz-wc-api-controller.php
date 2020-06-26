@@ -59,8 +59,7 @@ class PZZ_WC_API_Controller {
 		}
 
 		/**
-		 * @since    1.2.0 Add permission callback.
-		 * @since    1.0.0
+		 * @since    1.2.0
 		 */
 		register_rest_route( $this->namespace . '/' . $this->get_version(), $path, array(
 			'methods' => $method,
