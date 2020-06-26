@@ -74,6 +74,27 @@ class PZZ_WC_API_Controller {
 	}
 
 	/**
+	 * Get orders of current logged in user
+	 *
+	 * @since    1.2.0
+	 * @param    WP_REST_Request   $request      Wordpress rest request object; passed by the WordPress.
+	 * @param    WP_User           $current_user Current logged in user.
+	 */
+	public function get_current_user_orders( $request, WP_User $user )
+	{		
+		$filter = [
+			'customer_id' => $user->ID
+		];
+
+		$orders_api = new PZZ_WC_API_Orders(new PZZ_WC_API_Server('/orders'));
+        $orders = $orders_api->get_orders($fields, $filter, null, $page);
+
+		$response   = new PZZ_JSON_Response();
+		$response->set_data( $orders );
+        return $response;
+	}
+
+	/**
 	 * Get version of API.
 	 * 
 	 * @since    1.2.0
