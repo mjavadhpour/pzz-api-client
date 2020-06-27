@@ -124,7 +124,7 @@ class PZZ_API_Controller {
 
 		$data['avatar'] = get_avatar( $current_user->ID, 64 );
 
-		$data = $this->get_elements( $data, $allowed_parameters );
+		$data = PZZ_Array_Helper::get_elements( $data, $allowed_parameters );
 		
 		$response->set_data( $data );
 
@@ -528,18 +528,5 @@ class PZZ_API_Controller {
 	 */
 	private function get_version() {
 		return 'v' . $this->version;
-	}
-
-	/**
-	 * Get all of the given elements from an array.
-	 * 
-	 * @since    1.2.0 get user information.
-	 * @param    Array   $data          The array of data that we want to retrive given elements from.
-	 * @param    Array   $elements      Elements names.
-	 * @
-	 */
-	
-	private function get_elements ( $data, $elements ) {
-		return array_intersect_key($data, array_flip($elements));
 	}
 }

@@ -155,6 +155,8 @@ class Pzz_Api_Client
          * The class responsible for create APIs and response to the API calls.
          * TODO: Refactor the controller includes process. @see {Automattic\WooCommerce\RestApi\Server}
          */
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/lib/woocommerce/includes/class-pzz-wc-cart-handler.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/lib/woocommerce/extends/includes/class-pzz-wc-checkout.php';
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/lib/woocommerce/extends/api/class-pzz-wc-api-server.php';
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/lib/woocommerce/extends/api/class-pzz-wc-api-resource.php';
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/lib/woocommerce/extends/api/class-pzz-wc-api-orders.php';
@@ -164,6 +166,7 @@ class Pzz_Api_Client
         /**
          *  The helper classes.
          */
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/utils/class-pzz-array.php';
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/utils/class-pzz-datetime.php';
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/utils/class-pzz-url.php';
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/utils/class-pzz-mysql.php';
@@ -284,6 +287,17 @@ class Pzz_Api_Client
             'handler' => $wc_core,
             'path' => 'orders',
             'callback' => 'get_current_user_orders',
+            'args' => function () {
+                return [];
+            },
+            'is_secure' => true
+        ];
+
+        $routes[] = [
+            'method' => 'POST',
+            'handler' => $wc_core,
+            'path' => 'orders/checkout',
+            'callback' => 'checkout_order',
             'args' => function () {
                 return [];
             },
