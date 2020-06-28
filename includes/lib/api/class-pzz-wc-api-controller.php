@@ -182,6 +182,39 @@ class PZZ_WC_API_Controller {
 	}
 
 	/**
+	 * Change customer password.
+	 *
+	 * @since    1.2.0
+	 * @param    WP_REST_Request   $request      Wordpress rest request object; passed by the WordPress.
+	 * @param    WP_User           $current_user Current logged in user.
+	 */
+	public function change_customer_password( WP_REST_Request $request, WP_User $user ) {
+		$data = $request->get_json_params();
+		
+		if ( !isset( $data['current_pass'] ) ) {
+			$this->send_error_response( __( 'Current password is required' ) );
+		}
+
+		if ( !isset( $data['new_pass'] ) ) {
+			$this->send_error_response( __( 'New password is required' ) );
+		}
+
+		$user_authenticated = wp_authenticate( $user->user_login, $data['current_pass'] );
+		
+		if (is_wp_error($user_authenticated)) {
+			$this->send_error_response( __( 'Bad credentials' ) );
+		}
+
+		if ( $user_authenticated->ID != $user->ID ) {
+			$this->send_error_response( __( 'You can not change password of another user' ) );
+		}
+
+		wp_set_password( $data['new_pass'], $user->ID );
+
+		$this->send_success_response( __('Password changed.') );
+	}
+
+	/**
 	 * Reset customer password.
 	 *
 	 * @since    1.2.0
