@@ -339,6 +339,17 @@ class Pzz_Api_Client
             'is_secure' => true
         ];
 
+        $routes[] = [
+            'method' => 'POST',
+            'handler' => $wc_core,
+            'path' => 'customers/edit',
+            'callback' => 'edit_customer',
+            'args' => function () {
+                return [];
+            },
+            'is_secure' => true
+        ];
+
         /**
          * @since    1.2.0 Get handler from $routes.
          * @since    1.0.0
