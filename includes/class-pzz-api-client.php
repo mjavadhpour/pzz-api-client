@@ -160,6 +160,7 @@ class Pzz_Api_Client
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/lib/woocommerce/extends/api/class-pzz-wc-api-server.php';
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/lib/woocommerce/extends/api/class-pzz-wc-api-resource.php';
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/lib/woocommerce/extends/api/class-pzz-wc-api-orders.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/lib/woocommerce/extends/api/class-pzz-wc-api-customers.php';
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/lib/api/class-pzz-api-controller.php';
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/lib/api/class-pzz-wc-api-controller.php';
 
@@ -302,6 +303,18 @@ class Pzz_Api_Client
                 return [];
             },
             'is_secure' => true
+        ];
+
+
+        $routes[] = [
+            'method' => 'POST',
+            'handler' => $core,
+            'path' => 'customers',
+            'callback' => 'create_new_customer',
+            'args' => function () {
+                return [];
+            },
+            'is_secure' => false
         ];
 
         /**

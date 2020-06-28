@@ -145,13 +145,45 @@ class PZZ_WC_API_Controller {
 			return $response;
 		}
 
-		$error = wc_notice_count( 'error' ) ? wc_get_notices( 'error' ) : __( 'Error in process checkout' );
-		$response->set_data( [
-			'success' => false,
-			'message' => $error
-		] );
+		$errors = wc_notice_count( 'error' ) ? wc_get_notices( 'error' ) : __( 'Error in process checkout' );
+		$response->set_data( $this->prepare_error_response( $errors ) );
 		$response->set_status( 400 );
 		return $response;
+	}
+
+	/**
+	 * Create new customer.
+	 *
+	 * @since    1.2.0
+	 * @param    WP_REST_Request   $request      Wordpress rest request object; passed by the WordPress.
+	 * @param    WP_User           $current_user Current logged in user.
+	 */
+	public function create_new_customer( WP_REST_Request $request, WP_User $user ) {
+		add_filter('wp_recaptcha_required', function () { return false; }, 10);
+		$data = $request->get_json_params();
+		$request_uri = '/wp-json'.$request->get_route();
+		$this->virtually_fill_submit_data( wp_create_nonce( 'woocommerce-register' ), 'woocommerce-register-nonce' );
+		$this->virtually_fill_submit_data( esc_attr( wp_unslash( $request_uri ) ), '_wp_http_referer' );
+		
+		$customers_api = new PZZ_WC_API_Customers(new PZZ_WC_API_Server("/customers"));
+		$result = $customers_api->create_customer($data);
+
+		if ( is_wp_error( $result ) ) {
+			$response->set_data( $this->prepare_error_response( $result->get_error_message() ) );
+			$response->set_status( 400 );
+			return $response;
+		}
+
+		$response->set_data( $result );
+		return $response;
+	}
+
+	public function prepare_error_response( $errors )
+	{
+		return [
+			'success' => false,
+			'message' => $errors
+		];
 	}
 
 	/**
