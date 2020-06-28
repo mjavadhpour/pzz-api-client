@@ -1,19 +1,22 @@
 === PZZ API Client ===
 Contributors: mjavadhpour
 Tags: RESTful API
-Requires at least: 3.0.1
+Requires at least: 4.2
 Tested up to: 5.4.2
 Requires PHP: 5.6
 License: GPL-2.0+
 License URI: http://www.gnu.org/licenses/gpl-2.0.txt
-Stable tag: 1.1.5
+Stable tag: 1.1.6
 
-This plugin provides simple RESTful API, developed specifically for Mobile clients that want to connect to your WordPress website.
+Provides a set of RESTful APIs, developed specifically for Mobile clients that want to connect to your WordPress website.
 
 == Description ==
-This plugin provides simple RESTful API, developed specifically for Mobile clients that want to connect to your WordPress website. 
+PZZ API Client provides a set of RESTful APIs, developed specifically for Mobile clients to connect to your WordPress website. 
 
-For now, we support some specific APIs such as posts, taxonomies, comments. We plan to support  More APIs. Also, this plugin integrated with your Auth method and we can get authenticated user and work with.
+This plugin support some specific APIs such as posts, taxonomies, comments. We plan to support more APIs.
+
+It is possible to authenticate a user using any of the following WP REST API authentication methods such as:
+-  JWT Authentication for WP REST API
 
 == Installation ==
 Download the latest stable version from https://github.com/mjavadhpour/pzz-api-client/releases and upload it into your WordPress site.
@@ -22,6 +25,9 @@ Download the latest stable version from https://github.com/mjavadhpour/pzz-api-c
 Feel free to open an Issue at https://github.com/mjavadhpour/pzz-api-client/issues, Also you can track the developing process from https://github.com/mjavadhpour/pzz-api-client/milestones.
 
 == Changelog ==
+= 1.1.6 =
+* Use isolated filters, this filters run just when endpoint was called. we provides this filters because plugin add target="_blank" to all links even when website serve a page.
+
 = 1.1.5 =
 * Resolve conflicts with reactor-core.
 
