@@ -38,6 +38,7 @@ class PZZ_WC_API_Controller {
 	 */
 	public function __construct( $namespace = 'pzz', $version = '1' ) {
 
+		define( 'DOING_AJAX', true );
 		$this->namespace = $namespace;
 		$this->version = $version;
 
@@ -83,13 +84,13 @@ class PZZ_WC_API_Controller {
 		$filter = [
 			'customer_id' => $user->ID
 		];
+		$fields = [];
+		$page = 1;
 
 		$orders_api = new PZZ_WC_API_Orders( new PZZ_WC_API_Server('/orders') );
         $orders = $orders_api->get_orders( $fields, $filter, null, $page );
 
-		$response   = new PZZ_JSON_Response();
-		$response->set_data( $orders );
-        return $response;
+		$this->send_success_response( $orders );
 	}
 
 	/**
@@ -101,7 +102,13 @@ class PZZ_WC_API_Controller {
 	 */
 	public function checkout_order( WP_REST_Request $request, WP_User $user ) {		
 		define( 'WOOCOMMERCE_CHECKOUT', true );
-		$data = $request->get_json_params();
+		/**
+		 * If requested data was null, just create a fake array to action, function properly.
+		 */
+		$data = $request->get_json_params() ?? ['checkout' => ['post_data' => ''], 'products' => []];
+		/**
+		 * Convert array to \stdClass|null
+		 */
 		$data_std = json_decode( json_encode( $data ) );
 		$this->setup_cart_session( $data_std ?? new \stdClass );
 		$this->virtually_fill_submit_data( wp_create_nonce('woocommerce-process_checkout'), '_wpnonce' );
@@ -114,8 +121,12 @@ class PZZ_WC_API_Controller {
 			$this->virtually_fill_submit_data( $value, "shipping_$key" );
 		}
 		$this->virtually_fill_submit_data( '', 'order_comments' );
-		$this->virtually_fill_submit_data( $data_std->checkout->payment_method, 'payment_method' );
-		$this->virtually_fill_submit_data( $data_std->checkout->shipping_method, 'shipping_method' );
+		if ( isset( $data_std->checkout->payment_method ) ) {
+			$this->virtually_fill_submit_data( $data_std->checkout->payment_method, 'payment_method' );
+		}
+		if ( isset( $data_std->checkout->shipping_method ) ) {
+			$this->virtually_fill_submit_data( $data_std->checkout->shipping_method, 'shipping_method' );
+		}
 		if ( isset( $data_std->checkout->terms ) && $data_std->checkout->terms ) {
 			$this->virtually_fill_submit_data( 'on', 'terms' );
 			$this->virtually_fill_submit_data( 1, 'terms-field' );
@@ -130,8 +141,6 @@ class PZZ_WC_API_Controller {
 		$checkout_service = new PZZ_WC_Checkout();
 		$order_id = $checkout_service->process_checkout();
 
-		$response   = new PZZ_JSON_Response();
-		
 		if ( $order_id ) {
 			$order = wc_get_order( $order_id );
 			$result['order']['id'] = $order->get_id();
@@ -141,14 +150,11 @@ class PZZ_WC_API_Controller {
 			$result['order']['pay_url'] = $pay_url;
 			$result['order']['received_url'] = $order->get_checkout_order_received_url();
 
-			$response->set_data( $result );
-			return $response;
+			$this->send_success_response( $result );
 		}
 
 		$errors = wc_notice_count( 'error' ) ? wc_get_notices( 'error' ) : __( 'Error in process checkout' );
-		$response->set_data( $this->prepare_error_response( $errors ) );
-		$response->set_status( 400 );
-		return $response;
+		$this->send_error_response( $errors );
 	}
 
 	/**
@@ -169,21 +175,35 @@ class PZZ_WC_API_Controller {
 		$result = $customers_api->create_customer($data);
 
 		if ( is_wp_error( $result ) ) {
-			$response->set_data( $this->prepare_error_response( $result->get_error_message() ) );
-			$response->set_status( 400 );
-			return $response;
+			$this->send_error_response( $result->get_error_message() );
 		}
-
-		$response->set_data( $result );
-		return $response;
+		
+		$this->send_success_response( $result );
 	}
 
-	public function prepare_error_response( $errors )
+	/**
+	 * Create a conventional error response body.
+	 * 
+	 * @since  1.2.0
+	 * @param  array|mixed $errors 
+	 * @param  int         $status Error status code.
+	 * @return array
+	 */
+	private function send_error_response( $errors, $status = 400 )
 	{
-		return [
-			'success' => false,
-			'message' => $errors
-		];
+		wp_send_json_error( array( 'error' => $errors ), $status );
+	}
+
+	/**
+	 * Create a conventional success response body.
+	 * 
+	 * @since  1.2.0
+	 * @param  array|mixed $data 
+	 * @return array
+	 */
+	private function send_success_response( $data )
+	{
+		wp_send_json_success( $data );
 	}
 
 	/**
@@ -237,39 +257,38 @@ class PZZ_WC_API_Controller {
         WC()->cart->set_session();
         WC()->cart->calculate_totals();
 
-        if ( isset( $entity_body->checkout ) && $entity_body->checkout ) {
-			$checkout = $entity_body->checkout;
-			do_action( 'woocommerce_checkout_update_order_review', $checkout->post_data );
-            $chosen_shipping_methods = WC()->session->get( 'chosen_shipping_methods' );
+		if ( isset( $entity_body->checkout->post_data ) ) {
+			do_action( 'woocommerce_checkout_update_order_review', $entity_body->checkout->post_data );
+		}
 
-            if ( isset( $checkout->shipping_method) && is_array( $checkout->shipping_method )) {
-                foreach ( $checkout->shipping_method as $key => $value ) {
-                    $chosen_shipping_methods[$key] = wc_clean( $value );
-                }
-            }
-
-            WC()->session->set( 'chosen_shipping_methods', $chosen_shipping_methods );
-            WC()->session->set( 
-				'chosen_payment_method', 
-				( isset( $checkout->payment_method ) && $checkout->payment_method ) ? 
-					$checkout->payment_method : '' 
-			);
-
-			if (isset($checkout->country)) {
-				WC()->customer->set_country($checkout->country);
-				WC()->customer->set_shipping_country($checkout->country);
-				WC()->customer->calculated_shipping(true);
+		$chosen_shipping_methods = WC()->session->get( 'chosen_shipping_methods' );
+		if ( isset( $entity_body->checkout->shipping_method ) && is_array( $entity_body->checkout->shipping_method )) {
+			foreach ( $entity_body->checkout->shipping_method as $key => $value ) {
+				$chosen_shipping_methods[$key] = wc_clean( $value );
 			}
+		}
 
-			foreach (['state', 'postcode', 'city', 'address', 'address_2'] as $value) {
-				if (isset($checkout->{$value})) {
-					WC()->customer->{'set_'.$value}( $checkout->{$value} );
-					WC()->customer->{'set_shipping_'.$value}( $checkout->{$value} );
-				}
+		WC()->session->set( 'chosen_shipping_methods', $chosen_shipping_methods );
+		WC()->session->set( 
+			'chosen_payment_method', 
+			( isset( $entity_body->checkout->payment_method ) && $entity_body->checkout->payment_method ) ? 
+				$entity_body->checkout->payment_method : '' 
+		);
+
+		if (isset($entity_body->checkout->country)) {
+			WC()->customer->set_country($entity_body->checkout->country);
+			WC()->customer->set_shipping_country($entity_body->checkout->country);
+			WC()->customer->calculated_shipping(true);
+		}
+
+		foreach (['state', 'postcode', 'city', 'address', 'address_2'] as $value) {
+			if (isset($entity_body->checkout->{$value})) {
+				WC()->customer->{'set_'.$value}( $entity_body->checkout->{$value} );
+				WC()->customer->{'set_shipping_'.$value}( $entity_body->checkout->{$value} );
 			}
+		}
 
-            WC()->cart->calculate_totals();
-        }
+		WC()->cart->calculate_totals();
     }
 
 	/**

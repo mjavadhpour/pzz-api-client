@@ -308,7 +308,7 @@ class Pzz_Api_Client
 
         $routes[] = [
             'method' => 'POST',
-            'handler' => $core,
+            'handler' => $wc_core,
             'path' => 'customers',
             'callback' => 'create_new_customer',
             'args' => function () {
@@ -330,7 +330,7 @@ class Pzz_Api_Client
                 $route['method'],
                 $route['callback'],
                 $route['args'](),
-                $route['is_secure']
+                $route['is_secure'] ?? null
             );
         }
     }

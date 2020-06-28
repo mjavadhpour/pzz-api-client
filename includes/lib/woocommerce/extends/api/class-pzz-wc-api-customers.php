@@ -9,6 +9,7 @@
  * @author     MJHP <mjavadhpour@gmail.com>
  */
 
+include ABSPATH . 'wp-content/plugins/woocommerce/includes/legacy/api/v3/class-wc-api-exception.php';
 include ABSPATH . 'wp-content/plugins/woocommerce/includes/legacy/api/v3/class-wc-api-customers.php';
 
 class PZZ_WC_API_Customers extends WC_API_Customers { }
