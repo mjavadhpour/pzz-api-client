@@ -42,6 +42,15 @@ class Pzz_Api_Client_Loader {
 	protected $filters;
 
 	/**
+	 * The array of isolated filters registered with WordPress just when our endpoints was called.
+	 *
+	 * @since    1.1.6
+	 * @access   protected
+	 * @var      array    $filters    The filters registered with WordPress to fire when the plugin loads.
+	 */
+	protected $isolated_filters;
+
+	/**
 	 * Initialize the collections used to maintain the actions and filters.
 	 *
 	 * @since    1.0.0
@@ -99,6 +108,20 @@ class Pzz_Api_Client_Loader {
 	}
 
 	/**
+	 * Add a new filter to the collection to be registered with WordPress.
+	 *
+	 * @since    1.1.6
+	 * @param    string               $hook             The name of the WordPress filter that is being registered.
+	 * @param    object               $component        A reference to the instance of the object on which the filter is defined.
+	 * @param    string               $callback         The name of the function definition on the $component.
+	 * @param    int                  $priority         Optional. The priority at which the function should be fired. Default is 10.
+	 * @param    int                  $accepted_args    Optional. The number of arguments that should be passed to the $callback. Default is 1
+	 */
+	public function add_isolated_filter( $hook, $component, $callback, $priority = 10, $accepted_args = 1 ) {
+		$this->isolated_filters = $this->add( $this->isolated_filters, $hook, $component, $callback, $priority, $accepted_args );
+	}
+
+	/**
 	 * Register the filters and actions with WordPress.
 	 *
 	 * @since    1.0.0
@@ -134,6 +157,14 @@ class Pzz_Api_Client_Loader {
 						 *                                          passed by WordPress.
 						 */
 						function ( $request ) use ( $hook, $current_user ) {
+							/**
+							 * Registed isolated filters when endpoint was called.
+							 * 
+							 * @since 1.1.6
+							 */
+							foreach ( $this->isolated_filters as $filter_hook ) {
+								add_filter( $filter_hook['hook'], array( $filter_hook['component'], $filter_hook['callback'] ), $filter_hook['priority'], $filter_hook['accepted_args'] );
+							}					
 
 							// Resolved as: new PZZ_API_Controller()->api_function_name()
 							return $hook['component']->{$hook['api_function_name']}( $request, $current_user );

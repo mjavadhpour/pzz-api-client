@@ -383,31 +383,55 @@ class Pzz_Api_Client
     {
         global $wp_json_pages, $pzz_json_media, $pzz_json_taxonomies;
 
-        // Users.
+        /**
+         * Users.
+         * 
+         * @since 1.0.0
+         */
         $pzz_json_users = new PZZ_JSON_Users();
         $this->loader->add_filter('pzz_prepare_post', $pzz_json_users, 'add_post_author_data', 10, 3);
         $this->loader->add_filter('pzz_prepare_comment', $pzz_json_users, 'add_comment_author_data', 10, 3);
 
-        // Post meta.
+        /**
+         * Post meta.
+         * 
+         * @since 1.0.0
+         */
         $pzz_json_post_meta = new PZZ_JSON_Meta_Posts();
         $this->loader->add_filter('pzz_prepare_post', $pzz_json_post_meta, 'add_post_meta_data', 10, 3);
 
-        // Media.
+        /**
+         * Media.
+         * 
+         * @since 1.0.0
+         */
         $pzz_json_media = new PZZ_JSON_Media();
         $this->loader->add_filter('pzz_prepare_post', $pzz_json_media, 'add_thumbnail_data', 10, 3);
 
-        // Posts.
+        /**
+         * Posts.
+         * 
+         * @since 1.0.0
+         */
         $pzz_json_taxonomies = new PZZ_JSON_Taxonomies();
         $this->loader->add_filter('pzz_prepare_post', $pzz_json_taxonomies, 'add_term_data', 10, 3);
         $this->loader->add_filter('pzz_get_taxonomies', $pzz_json_taxonomies, 'get_items', 10, 1);
 
-        // Post comments.
+        /**
+         * Post comments.
+         * 
+         * @since 1.0.0
+         */
         $pzz_json_comments = new PZZ_JSON_Comments();
         $this->loader->add_filter('pzz_prepare_post_comments', $pzz_json_comments, 'get_comments', 10, 1);
 
-        // Post links.
+        /**
+         * Post links.
+         * 
+         * @since 1.1.6
+         */
         $wp_json_post = new PZZ_Post_Helper();
-        $this->loader->add_filter('the_content', $wp_json_post, 'add_target_blank_to_links', 10, 1);
+        $this->loader->add_isolated_filter('the_content', $wp_json_post, 'add_target_blank_to_links', 10, 1);
     }
 
     /**
