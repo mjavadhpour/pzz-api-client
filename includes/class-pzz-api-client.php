@@ -317,6 +317,17 @@ class Pzz_Api_Client
             'is_secure' => false
         ];
 
+        $routes[] = [
+            'method' => 'POST',
+            'handler' => $wc_core,
+            'path' => 'customers/reset-password',
+            'callback' => 'reset_customer_password',
+            'args' => function () {
+                return [];
+            },
+            'is_secure' => false
+        ];
+
         /**
          * @since    1.2.0 Get handler from $routes.
          * @since    1.0.0

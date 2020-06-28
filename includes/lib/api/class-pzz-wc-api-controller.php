@@ -182,7 +182,79 @@ class PZZ_WC_API_Controller {
 	}
 
 	/**
+	 * Reset customer password.
+	 *
+	 * @since    1.2.0
+	 * @param    WP_REST_Request   $request      Wordpress rest request object; passed by the WordPress.
+	 * @param    WP_User           $current_user Current logged in user.
+	 */
+	public function reset_customer_password( WP_REST_Request $request, WP_User $user ) {
+		global $wpdb, $wp_hasher;
+		$data = $request->get_json_params();
+
+		add_filter('wp_recaptcha_required', function () { return false; }, 10);
+
+		if ( !isset( $data['username'] ) ) {
+			$this->send_error_response( __('Username or Email required') );
+		}
+
+		if ( empty( trim( $data['username'] ) ) ) {
+			$this->send_error_response( __('Username or Email required') );
+		}
+
+		$user = get_user_by( 'login', $data['username'] );
+
+		if (
+			!$user && 
+			is_email( $data['username'] ) && 
+			apply_filters( 'woocommerce_get_username_from_email', true )
+		) {
+            $user = get_user_by( 'email', $data['username'] );
+		}
+
+		if (!$user) {
+            $this->send_error_response( __('<strong>ERROR</strong>: Invalid username or e-mail.') );
+        }
+		
+		if ( is_multisite() && !is_user_member_of_blog( $user->ID, get_current_blog_id() ) ) {
+			$this->send_error_response( __('Invalid username or e-mail.', 'woocommerce') );
+		}
+		
+		do_action('lostpassword_post');
+
+		$user_login = $user->user_login;
+		do_action('retrieve_password', $user_login);
+		
+		$allow = apply_filters('allow_password_reset', true, $user->ID);
+		if ( !$allow ) {
+            $this->send_error_response( __('Password reset is not allowed for this user', 'woocommerce') );
+        }
+		if ( is_wp_error( $allow ) ) {
+            $this->send_error_response( $allow->get_error_message() );
+		}
+
+		$key = wp_generate_password(20, false);
+		do_action('retrieve_password_key', $user_login, $key);
+		
+		if ( empty( $wp_hasher ) ) {
+            require_once ABSPATH . 'wp-includes/class-phpass.php';
+            $wp_hasher = new PasswordHash( 8, true );
+		}
+		
+		$hashed = $wp_hasher->HashPassword($key);
+		
+		$wpdb->update( $wpdb->users, array( 'user_activation_key' => $hashed ), array( 'user_login' => $user_login ) );
+
+		WC()->mailer();
+		do_action('woocommerce_reset_password_notification', $user_login, $key);
+
+		$this->send_success_response( __('Check your e-mail for the confirmation link.', 'woocommerce') );
+	}
+
+	/**
 	 * Create a conventional error response body.
+	 * With this method, application will be died,
+	 * then you don't need to return.
 	 * 
 	 * @since  1.2.0
 	 * @param  array|mixed $errors 
@@ -196,6 +268,8 @@ class PZZ_WC_API_Controller {
 
 	/**
 	 * Create a conventional success response body.
+	 * With this method, application will be died,
+	 * then you don't need to return.
 	 * 
 	 * @since  1.2.0
 	 * @param  array|mixed $data 
