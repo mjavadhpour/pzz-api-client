@@ -87,7 +87,7 @@ class PZZ_WC_API_Controller {
 		$fields = [];
 		$page = 1;
 
-		$orders_api = new PZZ_WC_API_Orders( new PZZ_WC_API_Server('/orders') );
+		$orders_api = new PZZ_WC_API_Orders( new PZZ_WC_API_Server( '/orders' ) );
         $orders = $orders_api->get_orders( $fields, $filter, null, $page );
 
 		$this->send_success_response( $orders );
@@ -171,13 +171,32 @@ class PZZ_WC_API_Controller {
 		$this->virtually_fill_submit_data( wp_create_nonce( 'woocommerce-register' ), 'woocommerce-register-nonce' );
 		$this->virtually_fill_submit_data( esc_attr( wp_unslash( $request_uri ) ), '_wp_http_referer' );
 		
-		$customers_api = new PZZ_WC_API_Customers(new PZZ_WC_API_Server("/customers"));
-		$result = $customers_api->create_customer($data);
+		$customers_api = new PZZ_WC_API_Customers( new PZZ_WC_API_Server( '/customers' ) );
+		$result = $customers_api->create_customer( $data );
 
 		if ( is_wp_error( $result ) ) {
 			$this->send_error_response( $result->get_error_message() );
 		}
 		
+		$this->send_success_response( $result );
+	}
+
+	/**
+	 * Edit customer.
+	 *
+	 * @since    1.2.0
+	 * @param    WP_REST_Request   $request      Wordpress rest request object; passed by the WordPress.
+	 * @param    WP_User           $current_user Current logged in user.
+	 */
+	public function edit_customer( WP_REST_Request $request, WP_User $user ) {
+		$data = $request->get_json_params();
+		$customers_api = new PZZ_WC_API_Customers( new PZZ_WC_API_Server( '/customers' ) );
+		$result = $customers_api->edit_customer( $user->ID, $data );
+
+		if ( is_wp_error( $result ) ) {
+			$this->send_error_response( $result->get_error_message() );
+		}
+
 		$this->send_success_response( $result );
 	}
 
