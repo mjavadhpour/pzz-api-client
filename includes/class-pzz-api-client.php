@@ -267,7 +267,8 @@ class Pzz_Api_Client
                 return (array(
                     'Authorization' => array(
                         'validate_callback' => function ($param, $request, $key) {
-                            return is_numeric($param);
+                            return is_string($param);
+
                         },
                         'description' => 'JWT Bearer token should be placed in the request header.',
                         'type' => 'string'
