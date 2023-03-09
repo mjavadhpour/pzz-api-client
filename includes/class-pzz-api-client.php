@@ -6,7 +6,7 @@
  * A class definition that includes attributes and functions used across both the
  * public-facing side of the site and the admin area.
  *
- * @link       https://www.linkedin.com/in/mjavadhpour/
+ * @link       https://profiles.wordpress.org/mjavadhpour/
  * @since      1.0.0
  *
  * @package    Pzz_Api_Client
@@ -25,11 +25,10 @@
  * @since      1.0.0
  * @package    Pzz_Api_Client
  * @subpackage Pzz_Api_Client/includes
- * @author     MJHP <mjavadhpour@gmail.com>
+ * @author     @mjavadhpour on WordPress.org
  */
 class Pzz_Api_Client
 {
-
     /**
      * The loader that's responsible for maintaining and registering all hooks that power
      * the plugin.
@@ -79,7 +78,6 @@ class Pzz_Api_Client
         $this->load_dependencies();
         $this->register_apis();
         $this->json_api_default_filters();
-
     }
 
     /**
@@ -139,7 +137,6 @@ class Pzz_Api_Client
      */
     private function load_dependencies()
     {
-
         /**
          * Exception classes.
          */
@@ -152,17 +149,8 @@ class Pzz_Api_Client
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-pzz-api-client-loader.php';
 
         /**
-         * The class responsible for create APIs and response to the API calls.
          * TODO: Refactor the controller includes process. @see {Automattic\WooCommerce\RestApi\Server}
          */
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/lib/woocommerce/includes/class-pzz-wc-cart-handler.php';
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/lib/woocommerce/extends/includes/class-pzz-wc-checkout.php';
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/lib/woocommerce/extends/api/class-pzz-wc-api-server.php';
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/lib/woocommerce/extends/api/class-pzz-wc-api-resource.php';
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/lib/woocommerce/extends/api/class-pzz-wc-api-orders.php';
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/lib/woocommerce/extends/api/class-pzz-wc-api-customers.php';
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/lib/api/class-pzz-api-controller.php';
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/lib/api/class-pzz-wc-api-controller.php';
 
         /**
          *  The helper classes.
@@ -182,7 +170,6 @@ class Pzz_Api_Client
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/lib/class-pzz-json-taxonomies.php';
 
         $this->loader = new Pzz_Api_Client_Loader();
-
     }
 
     /**
@@ -193,27 +180,31 @@ class Pzz_Api_Client
      */
     private function register_apis()
     {
-        /**
-         * Wordpress related routes.
-         * @since    1.0.0
-         */
-        $core = new PZZ_API_Controller('pzz', $this->get_api_version('wp'));
-
         $routes[] = [
-            'method' => 'GET',
-            'handler' => $core,
-            'path' => 'posts',
-            'callback' => 'get_posts',
+            'api_method' => 'GET',
+            'callback' => 'build_route',
+            'component' => [
+                'class' => 'PZZ_API_Controller',
+                'path' => 'includes/lib/api/class-pzz-api-controller.php',
+            ],
+            'api_route' => 'posts',
+            'api_function_name' => 'get_posts',
+            'api_version' => $this->get_api_version('wp'),
             'args' => function () {
                 return array();
             },
         ];
 
         $routes[] = [
-            'method' => 'GET',
-            'handler' => $core,
-            'path' => 'taxonomies/(?P<taxonomy_type>\w+)',
-            'callback' => 'get_taxonomies',
+            'api_method' => 'GET',
+            'callback' => 'build_route',
+            'component' => [
+                'class' => 'PZZ_API_Controller',
+                'path' => 'includes/lib/api/class-pzz-api-controller.php',
+            ],
+            'api_route' => 'taxonomies/(?P<taxonomy_type>\w+)',
+            'api_function_name' => 'get_taxonomies',
+            'api_version' => $this->get_api_version('wp'),
             'args' => function () {
                 return (array(
                     'taxonomy_type' => array(
@@ -227,10 +218,15 @@ class Pzz_Api_Client
         ];
 
         $routes[] = [
-            'method' => 'GET',
-            'handler' => $core,
-            'path' => 'posts/(?P<id>\d+)/comments',
-            'callback' => 'get_post_comments',
+            'api_method' => 'GET',
+            'callback' => 'build_route',
+            'component' => [
+                'class' => 'PZZ_API_Controller',
+                'path' => 'includes/lib/api/class-pzz-api-controller.php',
+            ],
+            'api_route' => 'posts/(?P<id>\d+)/comments',
+            'api_function_name' => 'get_post_comments',
+            'api_version' => $this->get_api_version('wp'),
             'args' => function () {
                 return (array(
                     'id' => array(
@@ -243,10 +239,15 @@ class Pzz_Api_Client
         ];
 
         $routes[] = [
-            'method' => 'GET',
-            'handler' => $core,
-            'path' => 'posts/(?P<id>\d+)',
-            'callback' => 'get_post',
+            'api_method' => 'GET',
+            'callback' => 'build_route',
+            'component' => [
+                'class' => 'PZZ_API_Controller',
+                'path' => 'includes/lib/api/class-pzz-api-controller.php',
+            ],
+            'api_route' => 'posts/(?P<id>\d+)',
+            'api_function_name' => 'get_post',
+            'api_version' => $this->get_api_version('wp'),
             'args' => function () {
                 return (array(
                     'id' => array(
@@ -259,16 +260,20 @@ class Pzz_Api_Client
         ];
 
         $routes[] = [
-            'method' => 'GET',
-            'handler' => $core,
-            'path' => 'whoami',
-            'callback' => 'get_current_logged_in_user_info',
+            'api_method' => 'GET',
+            'callback' => 'build_route',
+            'component' => [
+                'class' => 'PZZ_API_Controller',
+                'path' => 'includes/lib/api/class-pzz-api-controller.php',
+            ],
+            'api_route' => 'whoami',
+            'api_function_name' => 'get_current_logged_in_user_info',
+            'api_version' => $this->get_api_version('wp'),
             'args' => function () {
                 return (array(
                     'Authorization' => array(
                         'validate_callback' => function ($param, $request, $key) {
                             return is_string($param);
-
                         },
                         'description' => 'JWT Bearer token should be placed in the request header.',
                         'type' => 'string'
@@ -278,93 +283,139 @@ class Pzz_Api_Client
             'is_secure' => true
         ];
 
+        $routes[] = [
+            'api_method' => 'GET',
+            'callback' => 'pzz_api_register_routes',
+            'component' => [
+                'class' => 'PZZ_API_WC_REST_Products_Controller',
+                'path' => 'includes/lib/api/class-pzz-api-wc-rest-products-controller.php',
+            ],
+            'api_route' => 'whoami',
+            'api_function_name' => 'get_current_logged_in_user_info',
+            'api_version' => $this->get_api_version('wp'),
+            'depend_on' => ['woocommerce/woocommerce.php'],
+        ];
+
+        $routes[] = [
+            'api_method' => 'GET',
+            'callback' => 'pzz_api_register_routes',
+            'component' => [
+                'class' => 'PZZ_API_WC_REST_Product_Categories_Controller',
+                'path' => 'includes/lib/api/class-pzz-api-wc-rest-product-categories-controller.php',
+            ],
+            'api_route' => 'whoami',
+            'api_function_name' => 'get_current_logged_in_user_info',
+            'api_version' => $this->get_api_version('wp'),
+            'depend_on' => ['woocommerce/woocommerce.php'],
+        ];
+
+        $routes[] = [
+            'api_method' => 'GET',
+            'callback' => 'pzz_api_register_routes',
+            'component' => [
+                'class' => 'PZZ_API_WC_REST_Product_Variations_Controller',
+                'path' => 'includes/lib/api/class-pzz-api-wc-rest-product-variations-controller.php',
+            ],
+            'api_route' => 'whoami',
+            'api_function_name' => 'get_current_logged_in_user_info',
+            'api_version' => $this->get_api_version('wp'),
+            'depend_on' => ['woocommerce/woocommerce.php'],
+        ];
+
+        $routes[] = [
+            'api_method' => 'GET',
+            'callback' => 'pzz_api_register_routes',
+            'component' => [
+                'class' => 'PZZ_API_WC_REST_Product_Tags_Controller',
+                'path' => 'includes/lib/api/class-pzz-api-wc-rest-product-tags-controller.php',
+            ],
+            'api_route' => 'whoami',
+            'api_function_name' => 'get_current_logged_in_user_info',
+            'api_version' => $this->get_api_version('wp'),
+            'depend_on' => ['woocommerce/woocommerce.php'],
+        ];
+
+        $routes[] = [
+            'api_method' => 'GET',
+            'callback' => 'pzz_api_register_routes',
+            'component' => [
+                'class' => 'PZZ_API_WC_REST_Product_Attributes_Controller',
+                'path' => 'includes/lib/api/class-pzz-api-wc-rest-product-attributes-controller.php',
+            ],
+            'api_route' => 'whoami',
+            'api_function_name' => 'get_current_logged_in_user_info',
+            'api_version' => $this->get_api_version('wp'),
+            'depend_on' => ['woocommerce/woocommerce.php'],
+        ];
+
+        $routes[] = [
+            'api_method' => 'GET',
+            'callback' => 'pzz_api_register_routes',
+            'component' => [
+                'class' => 'PZZ_API_WC_REST_Product_Attribute_Terms_Controller',
+                'path' => 'includes/lib/api/class-pzz-api-wc-rest-product-attribute-terms-controller.php',
+            ],
+            'api_route' => 'whoami',
+            'api_function_name' => 'get_current_logged_in_user_info',
+            'api_version' => $this->get_api_version('wp'),
+            'depend_on' => ['woocommerce/woocommerce.php'],
+        ];
+
+        $routes[] = [
+            'api_method' => 'GET',
+            'callback' => 'pzz_api_register_routes',
+            'component' => [
+                'class' => 'PZZ_API_WC_REST_Orders_Controller',
+                'path' => 'includes/lib/api/class-pzz-api-wc-rest-orders-controller.php',
+            ],
+            'api_route' => 'whoami',
+            'api_function_name' => 'get_current_logged_in_user_info',
+            'api_version' => $this->get_api_version('wp'),
+            'depend_on' => ['woocommerce/woocommerce.php'],
+        ];
+
+        $routes[] = [
+            'api_method' => 'GET',
+            'callback' => 'pzz_api_register_routes',
+            'component' => [
+                'class' => 'PZZ_API_WC_REST_Product_Reviews_Controller',
+                'path' => 'includes/lib/api/class-pzz-api-wc-rest-products-review-controller.php',
+            ],
+            'api_route' => 'whoami',
+            'api_function_name' => 'get_current_logged_in_user_info',
+            'api_version' => $this->get_api_version('wp'),
+            'depend_on' => ['woocommerce/woocommerce.php'],
+        ];
+
+        $routes[] = [
+            'api_method' => 'GET',
+            'callback' => 'pzz_api_register_routes',
+            'component' => [
+                'class' => 'PZZ_API_WC_REST_Report_Top_Sellers_Controller',
+                'path' => 'includes/lib/api/class-pzz-api-wc-rest-report-top-sellers-controller.php',
+            ],
+            'api_route' => 'whoami',
+            'api_function_name' => 'get_current_logged_in_user_info',
+            'api_version' => $this->get_api_version('wp'),
+            'depend_on' => ['woocommerce/woocommerce.php'],
+        ];
+
         /**
-         * Woocommerce related routes
-         * @since    1.2.0
-         */
-        $wc_core = new PZZ_WC_API_Controller('pzz/wc', $this->get_api_version('wc'));
-
-        $routes[] = [
-            'method' => 'GET',
-            'handler' => $wc_core,
-            'path' => 'orders',
-            'callback' => 'get_current_user_orders',
-            'args' => function () {
-                return [];
-            },
-            'is_secure' => true
-        ];
-
-        $routes[] = [
-            'method' => 'POST',
-            'handler' => $wc_core,
-            'path' => 'orders/checkout',
-            'callback' => 'checkout_order',
-            'args' => function () {
-                return [];
-            },
-            'is_secure' => true
-        ];
-
-
-        $routes[] = [
-            'method' => 'POST',
-            'handler' => $wc_core,
-            'path' => 'customers',
-            'callback' => 'create_new_customer',
-            'args' => function () {
-                return [];
-            },
-            'is_secure' => false
-        ];
-
-        $routes[] = [
-            'method' => 'POST',
-            'handler' => $wc_core,
-            'path' => 'customers/reset-password',
-            'callback' => 'reset_customer_password',
-            'args' => function () {
-                return [];
-            },
-            'is_secure' => false
-        ];
-
-        $routes[] = [
-            'method' => 'POST',
-            'handler' => $wc_core,
-            'path' => 'customers/change-password',
-            'callback' => 'change_customer_password',
-            'args' => function () {
-                return [];
-            },
-            'is_secure' => true
-        ];
-
-        $routes[] = [
-            'method' => 'POST',
-            'handler' => $wc_core,
-            'path' => 'customers/edit',
-            'callback' => 'edit_customer',
-            'args' => function () {
-                return [];
-            },
-            'is_secure' => true
-        ];
-
-        /**
+         * @since    1.2.8 Rename variables
          * @since    1.2.0 Get handler from $routes.
          * @since    1.0.0
          */
         foreach ($routes as $route) {
             $this->loader->add_rest_api_action(
                 'rest_api_init',
-                $route['handler'],
-                'build_route',
-                $route['path'],
-                $route['method'],
+                $route['component'],
                 $route['callback'],
-                $route['args'](),
-                $route['is_secure'] ?? null
+                $route['api_route'],
+                $route['api_method'],
+                $route['api_function_name'],
+                is_callable($route['args'] ?? '') ? $route['args']() : null,
+                $route['is_secure'] ?? null,
+                $route['depend_on'] ?? [],
             );
         }
     }
@@ -373,7 +424,7 @@ class Pzz_Api_Client
      * Register the default JSON API filters.
      *
      * @since 1.0.0
-     * 
+     *
      * @internal This will live in default-filters.php
      *
      * @global PZZ_JSON_Media      $pzz_json_media
@@ -386,7 +437,7 @@ class Pzz_Api_Client
 
         /**
          * Users.
-         * 
+         *
          * @since 1.0.0
          */
         $pzz_json_users = new PZZ_JSON_Users();
@@ -395,7 +446,7 @@ class Pzz_Api_Client
 
         /**
          * Post meta.
-         * 
+         *
          * @since 1.0.0
          */
         $pzz_json_post_meta = new PZZ_JSON_Meta_Posts();
@@ -403,7 +454,7 @@ class Pzz_Api_Client
 
         /**
          * Media.
-         * 
+         *
          * @since 1.0.0
          */
         $pzz_json_media = new PZZ_JSON_Media();
@@ -411,7 +462,7 @@ class Pzz_Api_Client
 
         /**
          * Posts.
-         * 
+         *
          * @since 1.0.0
          */
         $pzz_json_taxonomies = new PZZ_JSON_Taxonomies();
@@ -420,7 +471,7 @@ class Pzz_Api_Client
 
         /**
          * Post comments.
-         * 
+         *
          * @since 1.0.0
          */
         $pzz_json_comments = new PZZ_JSON_Comments();
@@ -428,11 +479,37 @@ class Pzz_Api_Client
 
         /**
          * Post links.
-         * 
+         *
          * @since 1.1.6
          */
         $wp_json_post = new PZZ_Post_Helper();
         $this->loader->add_isolated_filter('the_content', $wp_json_post, 'add_target_blank_to_links', 10, 1);
+
+        add_filter('rest_request_before_callbacks', function ($response, $component, $request) {
+            $route = $request->get_route();
+            $params = $request->get_params();
+            $isFromPzzApp = is_array($params) && isset($params['pzz']) && 'pzz' === $params['pzz'];
+            preg_match('/^\/wc\/store\/cart.*/', $route, $cartMathces);
+            preg_match('/^\/wc\/store\/checkout.*/', $route, $checkoutMatches);
+            preg_match('/^\/wc\/store\/add-item.*/', $route, $addItemMatches);
+            if (boolval(count($cartMathces) + count($checkoutMatches) + count($addItemMatches)) && $isFromPzzApp) {
+                add_filter('woocommerce_store_api_disable_nonce_check', '__return_true');
+            }
+            return $response;
+        }, 10, 3);
+
+        add_filter('restricted_site_access_user_can_access', function () {
+            global $wp;
+            $route = $wp->request;
+            if (empty(trim($route))) {
+                return null;
+            }
+            preg_match('/^wp\-json\/pzz\/v1.*/', $route, $mathces);
+            if (is_array($mathces) && boolval(count($mathces))) {
+                return true;
+            }
+            return null;
+        }, 10, 3);
     }
 
     /**

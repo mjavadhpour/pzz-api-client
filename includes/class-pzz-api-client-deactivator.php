@@ -3,7 +3,7 @@
 /**
  * Fired during plugin deactivation
  *
- * @link       https://www.linkedin.com/in/mjavadhpour/
+ * @link       https://profiles.wordpress.org/mjavadhpour/
  * @since      1.0.0
  *
  * @package    Pzz_Api_Client
@@ -18,19 +18,18 @@
  * @since      1.0.0
  * @package    Pzz_Api_Client
  * @subpackage Pzz_Api_Client/includes
- * @author     MJHP <mjavadhpour@gmail.com>
+ * @author     @mjavadhpour on WordPress.org
  */
-class Pzz_Api_Client_Deactivator {
-
-	/**
-	 * Short Description. (use period)
-	 *
-	 * Long Description.
-	 *
-	 * @since    1.0.0
-	 */
-	public static function deactivate() {
-
-	}
-
+class Pzz_Api_Client_Deactivator
+{
+    /**
+     * Short Description. (use period)
+     *
+     * Long Description.
+     *
+     * @since    1.0.0
+     */
+    public static function deactivate()
+    {
+    }
 }

@@ -8,19 +8,19 @@
  * @since      1.0.0
  * @package    Pzz_Api_Client
  * @subpackage Pzz_Api_Client/includes
- * @author     MJHP <mjavadhpour@gmail.com>
+ * @author     @mjavadhpour on WordPress.org
  */
-class Pzz_Api_Client_Activator {
-
-	/**
-	 * Short Description. (use period)
-	 *
-	 * Long Description.
-	 *
-	 * @since    1.0.0
-	 */
-	public static function activate()
-	{
-		// doing actions that are required for activation
-	}
+class Pzz_Api_Client_Activator
+{
+    /**
+     * Short Description. (use period)
+     *
+     * Long Description.
+     *
+     * @since    1.0.0
+     */
+    public static function activate()
+    {
+        // doing actions that are required for activation
+    }
 }

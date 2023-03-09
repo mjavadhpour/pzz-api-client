@@ -1,101 +1,68 @@
 <?php
 
-defined('ABSPATH') || exit;
-
 /**
  * The core functionality of the plugin.
  *
- * @since      1.2.0
+ * @since      1.1.1
  * @package    Pzz_Api_Client
  * @subpackage Pzz_Api_Client/includes
  * @author     @mjavadhpour on WordPress.org
  *
  * TODO: Check for refactor with this link: <a>https://upnrunn.com/blog/2018/04/how-to-extend-wp-rest-api-from-your-custom-plugin-part-3/</a>
  */
-class PZZ_API_Controller
+class PZZ_JSON_Posts_Controller
 {
+    /**
+     * The namespace of APIs.
+     *
+     * @since    1.1.1
+     * @access   private
+     * @var      string    $namespace    The namespace of APIs.
+     */
+    private $namespace;
+
+    /**
+     * The version of the APIs.
+     *
+     * @since    1.1.1
+     * @access   private
+     * @var      string    $version    The version of the APIs.
+     */
+    private $version;
+
+    /**
+     * Initialize the class and set its properties.
+     *
+     * @since      1.1.1
+     * @param      string                   $plugin_name       The namespace of APIs.
+     * @param      string                   $version           The version of the APIs.
+     */
+    public function __construct($namespace = 'pzz', $version = '1')
+    {
+        $this->namespace = $namespace;
+        $this->version = $version;
+    }
+
     /**
      * Build API route with given arguments. the namespace and the version
      * come from the inner class properties.
      *
-     * @since    1.2.0
+     * @since    1.1.1
      * @param    function    $callback    The function that was executed when the endpoint was called.
-     * @param    string      $namespace   Namespace of the route eg. 'pzz/v1'
      * @param    string      $path        The path of the API. You can start path with the "/" character or not; it was optional.
      * @param    string      $method      The API HTTP method.
-     * @param    array       $args        Optional. Either an array of options for the endpoint,
      */
-    public function build_route($callback, $path, $method, $args, $current_user, $is_secure = false, $namespace = 'pzz/v1')
+    public function build_route($callback, $path, $method, $args = array())
     {
-        /**
-         * @since    1.2.0 Add permission callback.
-         * @since    1.0.0
-         */
-        register_rest_route($namespace, $path, array(
-            'methods' => $method,
-            'callback' => $callback,
-            'args' => $args ?? [],
-            'permission_callback' => function ($test) use ($is_secure, $current_user) {
-                return !$is_secure || ($is_secure && (is_a($current_user, 'WP_User') && $current_user->ID > 0));
-            }
-        ));
-    }
-
-    /**
-     * Get current logged in user info.
-     *
-     * @since    1.2.0
-     * @param    WP_REST_Request   $request      Wordpress rest request object; passed by the WordPress.
-     * @param    WP_User           $current_user Current logged in user.
-     */
-    public function get_current_logged_in_user_info($request, $current_user)
-    {
-        if (empty($current_user->id)) {
-            return new WP_Error(
-                'rest_not_logged_in',
-                __('You are not currently logged in.'),
-                array( 'status' => 401 )
-            );
+        if ($args == null) {
+            $args = array();
         }
 
-
-        $response   = new PZZ_JSON_Response();
-
-        /**
-         * elements that need to be in response.
-        */
-        $allowed_parameters = [
-            'nickname',
-            'first_name',
-            'last_name',
-            'description',
-            'locale',
-            'wp_capabilities',
-            'ID',
-            'user_login',
-            'user_nicename',
-            'user_email',
-            'user_url',
-            'user_registered',
-            'user_status',
-            'display_name',
-            'avatar',
-         ];
-
-
-        $data['meta'] = get_user_meta($current_user->id);
-
-        $data['user'] = (array) (get_userdata($current_user->id)->data);
-
-        $data = array_merge($data['meta'], $data['user']);
-
-        $data['avatar'] = get_avatar($current_user->ID, 64);
-
-        $data = PZZ_Array_Helper::get_elements($data, $allowed_parameters);
-
-        $response->set_data($data);
-
-        return $response;
+        register_rest_route($this->namespace . '/' . $this->get_version(), $path, array(
+            'methods' => $method,
+            'callback' => $callback,
+            'args' => $args
+        ));
     }
 
     /**
@@ -109,7 +76,7 @@ class PZZ_API_Controller
      *               tag
      *               tag_id
      *
-     * @since    1.2.0
+     * @since    1.1.1
      * @param    WP_REST_Request   $request    Wordpress rest request object; passed by the WordPress.
      */
     public function get_posts($request)
@@ -192,13 +159,13 @@ class PZZ_API_Controller
     /**
      * Retrieve a post.
      *
-     * @since 1.2.0
+     * @since 1.1.1
      * @uses get_post()
      * @param int|WP_REST_Request $id Post ID or WP_REST_Request object.
      * @param string $context The context; 'view' (default) or 'edit'.
      * @return array Post entity
      */
-    public function get_post($idOrRequest, $current_user, $context = 'embed')
+    public function get_post($idOrRequest, $context = 'embed')
     {
         if (is_int($idOrRequest)) {
             $id = (int) $idOrRequest;
@@ -252,7 +219,7 @@ class PZZ_API_Controller
     /**
      * Retrieve the post comments.
      *
-     * @since 1.2.0
+     * @since 1.1.1
      * @uses get_post_comments()
      * @param int|WP_REST_Request $id Post ID or WP_REST_Request object.
      * @return array Comment entity
@@ -263,7 +230,7 @@ class PZZ_API_Controller
     }
 
     /**
-     * @since 1.2.0
+     * @since 1.1.1
      */
     public function get_taxonomies($request)
     {
@@ -273,7 +240,7 @@ class PZZ_API_Controller
     /**
      * Prepares post data for return in an XML-RPC object.
      *
-     * @since 1.2.0
+     * @since 1.1.1
      * @access private
      * @param array $post The unprepared post data
      * @param string $context The context for the prepared post. (view|view-revision|edit|embed|single-parent)
@@ -337,7 +304,7 @@ class PZZ_API_Controller
         }
 
         $post_fields_extended = array(
-            'guid' => apply_filters('get_the_guid', $post['guid']),
+            'guid'           => apply_filters('get_the_guid', $post['guid']),
         );
 
         if ($context !== 'media') {
@@ -438,7 +405,7 @@ class PZZ_API_Controller
     /**
      * Retrieve the post excerpt.
      *
-     * @since 1.2.0
+     * @since 1.1.1
      * @return string
      */
     private function prepare_excerpt($excerpt)
@@ -459,7 +426,7 @@ class PZZ_API_Controller
     /**
      * Retrive the post content if available
      *
-     * @since 1.2.0
+     * @since 1.1.1
      */
     private function prepare_content($content)
     {
@@ -473,7 +440,7 @@ class PZZ_API_Controller
     /**
      * Retrieve all meta for a post.
      *
-     * @since 1.2.0
+     * @since 1.1.1
      * @param int $post_id Post ID
      * @return (array[]|WP_Error) List of meta object data on success, WP_Error otherwise
      */
@@ -482,5 +449,16 @@ class PZZ_API_Controller
         $handler = new PZZ_JSON_Meta_Posts();
 
         return $handler->get_all_meta($post_id);
+    }
+
+    /**
+     * Get version of API.
+     *
+     * @since    1.1.1
+     * @return   string    The API version.
+     */
+    private function get_version()
+    {
+        return 'v' . $this->version;
     }
 }
